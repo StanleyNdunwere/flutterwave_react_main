@@ -15,6 +15,10 @@ function App() {
     <div className="max-w-screen-2x w-screen-2xl mx-auto">
       <Header />
       <Switch>
+
+        <Route path='/' exact component={Home} />
+        <Route path="/sign-up" exact component={SignUpComponent} />
+        <Route path="/login" exact component={LoginComponent} />
         {/* <Home /> */}
         {/* <SignUpComponent /> */}
         {/* <LoginComponent/> */}
@@ -22,7 +26,7 @@ function App() {
         {/* <ProductEditCreate/> */}
         {/* <MerchantDashboard /> */}
         {/* <RiderDashboard /> */}
-        <AdminDashBoard />
+        {/* <AdminDashBoard /> */}
       </Switch>
     </div>
   );

@@ -1,9 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import shop from "../../assets/images/shop.svg"
 import CustomButton from '../global_components/button.component'
 import ProductCard from '../home/product_card.component'
+import axios from 'axios'
 
 export default function SignUpComponent(props) {
+  const [signUpDetails, setSignUpDetails] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [allBanksByCode, setAllBanksByCode] = useState([])
+
+  const fetchAllBanksByCode = (bankCode) => {
+    const url = "http://localhost:3000/country-currency/bank-codes/";
+    axios.get(url + bankCode)
+      .then(res => {
+        const banks = res.data;
+        console.log(banks.data.data)
+        if (banks.status === 'success') {
+          setAllBanksByCode(banks.data)
+          console.log(allBanksByCode);
+        } else {
+          setAllBanksByCode([]);
+        }
+      });
+  }
+
   return (
     <div className="w-full grid grid-cols-2 items-center justify-center px-10 mb-2">
       <div className="p-24">
@@ -13,24 +33,35 @@ export default function SignUpComponent(props) {
         <h2 className="text-4xl font-nunito font-extrabold text-gray-800 pb-4 mx-auto text-center">Sign Up</h2>
         <div className="flex flex-col justify-between h-full pb-7 w-4/5 mx-auto">
           <div>
-            <p for="username" className="font-nunito font-bold py-0">Enter your username:</p>
-            <input name="username" type="text" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
+            <p className="font-nunito font-bold py-0">Enter your username:</p>
+            <input onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, username: e.target.value })
+            }} name="username" type="text" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
           </div>
           <div>
-            <p for="password" className="font-nunito font-bold py-0">Enter your password:</p>
-            <input name="password" type="password" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
+            <p className="font-nunito font-bold py-0">Enter your password:</p>
+            <input onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, password: e.target.value })
+            }} name="password" type="password" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
           </div>
           <div>
-            <p for="email" className="font-nunito font-bold py-0 my-0">Enter your Email:</p>
-            <input name="email" type="email" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito  h-8 text-decoration-none w-full" />
+            <p className="font-nunito font-bold py-0 my-0">Enter your Email:</p>
+            <input onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, email: e.target.value })
+            }} name="email" type="email" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito  h-8 text-decoration-none w-full" />
           </div>
           <div>
-            <p for="email" className="font-nunito font-bold py-0 my-0">Enter your Account Number:</p>
-            <input name="email" type="number" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
+            <p className="font-nunito font-bold py-0 my-0">Enter your Account Number:</p>
+            <input onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, accountNumber: e.target.value })
+            }} name="accountNumber" type="number" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full" />
           </div>
           <div>
-            <p for="country" className="font-nunito font-bold py-0">Choose Your Country:</p>
-            <select name="country" id="country" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
+            <p className="font-nunito font-bold py-0">Choose Your Country:</p>
+            <select onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, country: e.target.value })
+              fetchAllBanksByCode(e.target.value);
+            }} name="country" id="country" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
               <option value=""> </option>
               <option value="NG">Nigeria</option>
               <option value="GH">Ghana</option>
@@ -39,31 +70,39 @@ export default function SignUpComponent(props) {
             </select>
           </div>
           <div>
-            <p for="country" className="font-nunito font-bold py-0">Choose Your Bank:</p>
-            <select name="country" id="country" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
+            <p onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, username: e.target.value })
+            }} className="font-nunito font-bold py-0">Choose Your Bank:</p>
+            <select name="bankCode" id="bankCode" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
               <option value=""> </option>
-              <option value="NG">Nigeria</option>
+              {allBanksByCode.map((bank) => {
+                return (<option value={bank.code}>{bank.name}</option>)
+              })}
+              {/* <option value="NG">Nigeria</option>
               <option value="GH">Ghana</option>
               <option value="UK">UK</option>
-              <option value="KYA">Kenya</option>
+              <option value="KYA">Kenya</option> */}
             </select>
           </div>
           <div>
-            <p for="accountType" className="font-nunito font-bold py-0">Choose Your Account Type:</p>
-            <select name="country" id="country" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
+            <p className="font-nunito font-bold py-0">Choose Your Account Type:</p>
+            <select onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, accountType: e.target.value })
+            }} name="accountType" id="accountType" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
               <option value=""> </option>
+
               <option value="merchant">Merchant</option>
               <option value="dispatch_rider">Dispatch Rider</option>
             </select>
           </div>
 
-          <div className="text-center pb-12">
+          <div className="text-center pb-12" onClick={(() => {
+            console.log(signUpDetails);
+          })}>
             <CustomButton text="Register" fontSize={"1.4rem"} />
           </div>
         </div>
-
       </div>
-
     </div>
   )
 
