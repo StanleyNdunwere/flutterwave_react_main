@@ -9,6 +9,22 @@ export default function SignUpComponent(props) {
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [allBanksByCode, setAllBanksByCode] = useState([])
 
+  const submitSignUpForm = async (signUpDetails) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: "http://localhost:3000/users/sign-up",
+        data: signUpDetails,
+      });
+
+      console.log(response.data.data)
+      // return response.data.data;
+    } catch (err) {
+      console.log(err)
+      // return null;
+    }
+  }
+
   const fetchAllBanksByCode = (bankCode) => {
     const url = "http://localhost:3000/country-currency/bank-codes/";
     axios.get(url + bankCode)
@@ -16,7 +32,7 @@ export default function SignUpComponent(props) {
         const banks = res.data;
         console.log(banks.data.data)
         if (banks.status === 'success') {
-          setAllBanksByCode(banks.data)
+          setAllBanksByCode([...banks.data.data])
           console.log(allBanksByCode);
         } else {
           setAllBanksByCode([]);
@@ -66,22 +82,18 @@ export default function SignUpComponent(props) {
               <option value="NG">Nigeria</option>
               <option value="GH">Ghana</option>
               <option value="UK">UK</option>
-              <option value="KYA">Kenya</option>
+              <option value="KE">Kenya</option>
             </select>
           </div>
           <div>
-            <p onChange={(e) => {
-              setSignUpDetails({ ...signUpDetails, username: e.target.value })
-            }} className="font-nunito font-bold py-0">Choose Your Bank:</p>
-            <select name="bankCode" id="bankCode" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
+            <p className="font-nunito font-bold py-0">Choose Your Bank:</p>
+            <select onChange={(e) => {
+              setSignUpDetails({ ...signUpDetails, bankCode: e.target.value })
+            }} name="bankCode" id="bankCode" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
               <option value=""> </option>
               {allBanksByCode.map((bank) => {
-                return (<option value={bank.code}>{bank.name}</option>)
+                return (<option key={bank.id} value={bank.code}>{bank.name}</option>)
               })}
-              {/* <option value="NG">Nigeria</option>
-              <option value="GH">Ghana</option>
-              <option value="UK">UK</option>
-              <option value="KYA">Kenya</option> */}
             </select>
           </div>
           <div>
@@ -96,10 +108,10 @@ export default function SignUpComponent(props) {
             </select>
           </div>
 
-          <div className="text-center pb-12" onClick={(() => {
-            console.log(signUpDetails);
-          })}>
-            <CustomButton text="Register" fontSize={"1.4rem"} />
+          <div className="text-center pb-12">
+            <CustomButton onClick={() => {
+              submitSignUpForm(signUpDetails)
+            }} text="Register" fontSize={"1.4rem"} />
           </div>
         </div>
       </div>
