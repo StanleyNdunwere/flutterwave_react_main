@@ -17,7 +17,7 @@ export default function SignUpComponent(props) {
         data: signUpDetails,
       });
 
-      console.log(response.data.data)
+      console.log(response.data)
       // return response.data.data;
     } catch (err) {
       console.log(err)
@@ -63,7 +63,7 @@ export default function SignUpComponent(props) {
           <div>
             <p className="font-nunito font-bold py-0 my-0">Enter your Email:</p>
             <input onChange={(e) => {
-              setSignUpDetails({ ...signUpDetails, email: e.target.value })
+              setSignUpDetails({ ...signUpDetails, accountEmail: e.target.value })
             }} name="email" type="email" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito  h-8 text-decoration-none w-full" />
           </div>
           <div>
@@ -88,7 +88,9 @@ export default function SignUpComponent(props) {
           <div>
             <p className="font-nunito font-bold py-0">Choose Your Bank:</p>
             <select onChange={(e) => {
-              setSignUpDetails({ ...signUpDetails, bankCode: e.target.value })
+              const index = e.nativeEvent.target.selectedIndex;
+              const selBankName = e.nativeEvent.target[index].text
+              setSignUpDetails({ ...signUpDetails, bankCode: e.target.value, bankName: selBankName })
             }} name="bankCode" id="bankCode" className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full">
               <option value=""> </option>
               {allBanksByCode.map((bank) => {
@@ -109,7 +111,7 @@ export default function SignUpComponent(props) {
           </div>
 
           <div className="text-center pb-12">
-            <CustomButton onClick={() => {
+            <CustomButton execFunc={() => {
               submitSignUpForm(signUpDetails)
             }} text="Register" fontSize={"1.4rem"} />
           </div>

@@ -24,7 +24,7 @@ export default function Home(props) {
       <h2 className="text-4xl font-extrabold text-gray-900 font-nunito py-3 text-center">Hello There... Let's go a-shopping!</h2>
 
       {(products.length > 0) ?
-        (<div className="grid grid-cols-3 justify-between items-center gap-14 mt-10 mx-32">
+        (<div className="grid grid-cols-5 justify-between items-center gap-10 mt-10 mx-16">
           { products.map(product => {
             // console.log(product);
             return <ProductCard
