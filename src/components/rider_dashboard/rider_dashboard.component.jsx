@@ -1,9 +1,9 @@
 import React from 'react';
-import MerchantDetail from '../components/global_components/merchant_detail.component';
-import MerchantEditProduct from '../components/merchant_dashboard/merchant_edit_product.component';
-import RiderDetail from '../components/global_components/rider_detail.component';
-import Transaction from '../components/global_components/transaction.component';
-import UserHeader from '../components/global_components/user_header.component';
+import MerchantDetail from '../global_components/merchant_detail.component';
+import MerchantEditProduct from '../merchant_dashboard/merchant_edit_product.component';
+import RiderDetail from '../global_components/rider_detail.component';
+import Transaction from '../global_components/transaction.component';
+import UserHeader from '../global_components/user_header.component';
 
 export default function RiderDashboard(props) {
   return (

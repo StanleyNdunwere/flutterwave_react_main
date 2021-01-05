@@ -7,7 +7,7 @@ import LoginComponent from './components/login_signup/login.component';
 import Product from './components/product/product.component';
 import ProductEditCreate from './components/product_edit/edit_create_product.component';
 import MerchantDashboard from './components/merchant_dashboard/merchant_dashboard.component';
-import RiderDashboard from './rider_dashboard/rider_dashboard.component';
+import RiderDashboard from '../src/components/rider_dashboard/rider_dashboard.component';
 import AdminDashBoard from './components/admin_dashboard/admin_dashboard.component';
 
 function App() {
