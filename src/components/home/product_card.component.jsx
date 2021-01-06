@@ -4,7 +4,7 @@ import CustomButton from "../global_components/button.component"
 export default function ProductCard(props) {
   return (
     <div className="">
-      <div className="h-80 bg-gray-300 rounded-2xl shadow-lg relative overflow-hidden" >
+      <div className="h-80 bg-gray-200 rounded-2xl shadow-lg relative overflow-hidden" >
         <img src={"http://" + props.imageLink} alt="product" className="absolute top-0 left-0 z-index-10" />
         <div className="w-full h-full flex flex-col items-center justify-between absolute bottom-0 left-0 z-index-20">
           <div className="flex flex-row items-center justify-end w-full">

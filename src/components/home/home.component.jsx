@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ProductCard from "./product_card.component";
+import ProductCard from "./product_card.component.jsx";
 import empty from "../../assets/images/empty.jpg";
 import axios from "axios";
 

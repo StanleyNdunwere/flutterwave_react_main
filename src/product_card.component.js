@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomButton from "../global_components/button.component"
+import CustomButton from "./components/global_components/button.component"
 
 export default function ProductCard(props) {
   return (
