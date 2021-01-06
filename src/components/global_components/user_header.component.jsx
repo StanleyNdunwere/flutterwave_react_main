@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import UserContext from "../../context/user.context";
 
 export default function UserHeader(props) {
+  const [state, dispatch] = useContext(UserContext);
   return (
     <>
-      <h3 className="font-nunito text-4xl font-bold py-1">Hello Username,</h3>
+      <h3 className="font-nunito text-4xl font-bold py-1">
+        Hello {state.username},
+      </h3>
       <div className="flex flex-row  items-center">
         {props.userType === "merchant" && (
           <>

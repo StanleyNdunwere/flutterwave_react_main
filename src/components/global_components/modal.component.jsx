@@ -3,7 +3,6 @@ import CustomButton from "./button.component";
 
 export default function Modal(props) {
   const close = props.closeModal != null ? props.closeModal : () => {};
-  console.log(close);
   return (
     <div className="w-full h-full fixed top-0 left-0  bg-opacity-30 bg-black">
       <div className="w-full h-full p-3 shadowAround rel m-auto z-index-20 flex flex-row justify-center items-center">

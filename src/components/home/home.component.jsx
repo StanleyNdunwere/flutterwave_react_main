@@ -9,7 +9,6 @@ export default function Home(props) {
   useEffect(() => {
     axios.get(`http://localhost:3000/products`).then((res) => {
       const products = res.data;
-      // console.log(products.data.products, "productsssssss");
       if (products.status === "success") {
         setProducts(products.data.products);
       } else {

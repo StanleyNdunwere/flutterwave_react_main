@@ -28,7 +28,6 @@ export default function SignUpComponent(props) {
         url: "http://localhost:3000/users/sign-up",
         data: signUpDetails,
       });
-      console.log(response.data);
       setShowModal(true);
       setModalContent({
         title: response.data.status,
@@ -43,10 +42,8 @@ export default function SignUpComponent(props) {
     const url = "http://localhost:3000/country-currency/bank-codes/";
     axios.get(url + bankCode).then((res) => {
       const banks = res.data;
-      // console.log(banks.data.data);
       if (banks.status === "success") {
         setAllBanksByCode([...banks.data.data]);
-        // console.log(allBanksByCode);
       } else {
         setAllBanksByCode([]);
       }

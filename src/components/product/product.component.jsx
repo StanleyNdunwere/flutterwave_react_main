@@ -3,18 +3,15 @@ import CustomButton from "../global_components/button.component";
 import addSign from "../../assets/images/addSign.svg";
 import minus from "../../assets/images/minus.svg";
 
-export default function Product(prop) {
+export default function Product(props) {
   return (
     <div className="w-full my-10 p-8 px-28 h-productDetail grid grid-cols-2 items-center">
       <div className="mx-10 w-productDetail overflow-hidden shadow-around rounded-4xl h-productDetail self-start">
-        <div
-          className=" mx-auto w-full h-full"
-          style={{
-            backgroundImage: "url(https://source.unsplash.com/random/800x800)",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-          }}
-        ></div>
+        <img
+          src="https://source.unsplash.com/random/800x800"
+          className="mx-auto w-full h-full"
+          alt="product"
+        />
       </div>
       <div className="h-full">
         <div className="w-4/5 h-auto">

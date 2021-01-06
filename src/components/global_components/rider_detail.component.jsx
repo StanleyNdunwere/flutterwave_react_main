@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function RiderDetail(props) {
-  console.log(props.userType);
   return (
     <div className="rounded-2xl border-yellow-500 border-2 p-4 w-full">
       <div className="flex flex-row items-center mb-3">

@@ -35,7 +35,6 @@ function App() {
   };
 
   const reducer = (state = initialState, action) => {
-    console.log(action.payload);
     switch (action.type) {
       case "LOGIN":
         saveToLocalStorage(action.payload);
@@ -53,7 +52,7 @@ function App() {
           token: null,
           username: null,
           accountType: null,
-          loggedIn:false,
+          loggedIn: false,
         }
       default:
         return state;
@@ -72,7 +71,7 @@ function App() {
           <PrivateRoute component={AdminDashBoard} exact path="/admin" userType="/admin" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/merchant" userType="/merchant" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/dispatch" userType="/dispatch_rider" userState={state} />
-          <PrivateRoute component={Product} exact path="/merchant/product" userType="/merchant" userState={state} />
+          <PrivateRoute component={ProductEditCreate} exact path="/merchant/product" userType="/merchant" userState={state} />
 
           {/* <Product /> */}
           {/* <ProductEditCreate/> */}
@@ -89,7 +88,6 @@ export default App;
 
 function PrivateRoute(props) {
   const { component: Component, ...rest } = { ...props }
-  console.log(props.userState);
   const loggedIn = props.userState.token !== null || props.userState.token !== undefined;
   let fallbackPath = "/";
   if (loggedIn) {
@@ -108,7 +106,6 @@ function PrivateRoute(props) {
         break;
     }
   }
-  console.log(`/${props.userState.accountType}` === props.userType)
   return (
     <Route {...rest} render=
       {(newProps) =>

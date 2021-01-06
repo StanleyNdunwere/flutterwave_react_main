@@ -5,8 +5,21 @@ import MerchantEditProduct from "./merchant_edit_product.component";
 import RiderDetail from "../global_components/rider_detail.component";
 import Transaction from "../global_components/transaction.component";
 import UserHeader from "../global_components/user_header.component";
+import { useHistory } from "react-router-dom";
 
 export default function MerchantDashboard(props) {
+  const history = useHistory();
+
+  const getUserDetails = () => {};
+
+  const getRiderDetails = () => {};
+
+  const getAllProducts = () => {};
+
+  const getAllRiders = () => {};
+
+  const getAllTransaction = () => {};
+
   return (
     <div className="max-w-full w-full my-2 px-8">
       <div className="w-full h-full ">
@@ -38,7 +51,12 @@ export default function MerchantDashboard(props) {
                   <h3 className="text-2xl font-nunito font-bold">
                     Your Products
                   </h3>
-                  <p className="py-2 px-6 rounded-xl text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md">
+                  <p
+                    onClick={() => {
+                      history.push(history.location.pathname + "/product");
+                    }}
+                    className="py-2 px-6 rounded-xl text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
+                  >
                     Add New Product
                   </p>
                 </div>

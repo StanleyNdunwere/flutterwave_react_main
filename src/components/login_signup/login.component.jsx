@@ -19,7 +19,6 @@ export default function LoginComponent(props) {
 
   const formIsFilled = () => {
     const values = Object.keys(loginDetails);
-    console.log(values);
     return !(values.length < 2);
   };
 
@@ -30,7 +29,6 @@ export default function LoginComponent(props) {
         url: "http://localhost:3000/users/login",
         data: loginDetails,
       });
-      // console.log(response.data);
       if (response.data.status !== "success") {
         setShowModal(true);
         setModalContent({
@@ -40,7 +38,6 @@ export default function LoginComponent(props) {
         });
       } else {
         const a = dispatch({ type: "LOGIN", payload: response.data });
-        console.log(state, "staetaerrae soe ")
         history.replace(`/${response.data.data.accountType}`);
       }
     } catch (err) {

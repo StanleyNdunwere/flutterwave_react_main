@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import MerchantDetail from "../global_components/merchant_detail.component";
 import MerchantEditProduct from "../merchant_dashboard/merchant_edit_product.component";
 import RiderDetail from "../global_components/rider_detail.component";
@@ -6,6 +7,18 @@ import Transaction from "../global_components/transaction.component";
 import UserHeader from "../global_components/user_header.component";
 
 export default function RiderDashboard(props) {
+  const history = useHistory();
+
+  const getUserDetails = () => {};
+
+  const getRiderDetails = () => {};
+
+  const getAllProducts = () => {};
+
+  const getAllRiders = () => {};
+
+  const getAllTransactions = () => {};
+
   return (
     <div className="max-w-full w-full my-2 px-8">
       <div className="w-full h-full ">
