@@ -4,8 +4,10 @@ import CustomButton from "../global_components/button.component";
 import axios from "axios";
 import UserContext from "../../context/user.context";
 import Modal from "../global_components/modal.component";
+import { useHistory } from "react-router-dom";
 
 export default function LoginComponent(props) {
+  const history = useHistory();
   const [loginDetails, setLoginDetails] = useState({});
   const [state, dispatch] = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
@@ -17,7 +19,7 @@ export default function LoginComponent(props) {
 
   const formIsFilled = () => {
     const values = Object.keys(loginDetails);
-    console.log(values)
+    console.log(values);
     return !(values.length < 2);
   };
 
@@ -37,7 +39,9 @@ export default function LoginComponent(props) {
           message: response.data.message,
         });
       } else {
-        dispatch({ type: "LOGIN", payload: response.data });
+        const a = dispatch({ type: "LOGIN", payload: response.data });
+        console.log(state, "staetaerrae soe ")
+        history.replace(`/${response.data.data.accountType}`);
       }
     } catch (err) {
       console.log(err);
@@ -94,9 +98,12 @@ export default function LoginComponent(props) {
               execFunc={() => {
                 if (formIsFilled()) {
                   submitLoginForm(loginDetails);
-                } else { 
-                  setShowModal(true)
-                  setModalContent({title:"Login Failed", message:"All fields are required"})
+                } else {
+                  setShowModal(true);
+                  setModalContent({
+                    title: "Login Failed",
+                    message: "All fields are required",
+                  });
                 }
               }}
               fontSize={"1.4rem"}

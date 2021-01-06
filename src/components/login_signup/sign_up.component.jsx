@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import shop from "../../assets/images/shop.svg";
 import CustomButton from "../global_components/button.component";
-import ProductCard from "../home/product_card.component";
 import axios from "axios";
 import Modal from "../global_components/modal.component";
 
 export default function SignUpComponent(props) {
   const [signUpDetails, setSignUpDetails] = useState({});
-  const [formSubmitted, setFormSubmitted] = useState(false);
   const [allBanksByCode, setAllBanksByCode] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
