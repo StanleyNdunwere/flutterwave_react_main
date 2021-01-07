@@ -17,17 +17,17 @@ import RiderDashboard from '../src/components/rider_dashboard/rider_dashboard.co
 import AdminDashBoard from './components/admin_dashboard/admin_dashboard.component';
 import { useContext, useEffect, useReducer, useState } from 'react';
 import AdminTransaction from './components/admin_dashboard/admin_transactions.component';
-env.config({ path: __dirname + '/.env' });
-function App() {
+function App(props) {
   let initialState = {
     token: window.localStorage.getItem("token"),
     username: window.localStorage.getItem("username"),
     accountType: window.localStorage.getItem("accountType"),
     id: window.localStorage.getItem("id"),
-    loggedIn: false
+    loggedIn: window.localStorage.getItem("token") != null ? true : false
   };
   const [initState, setInitState] = useState(initialState);
 
+  console.log(initState);
   const saveToLocalStorage = (payload) => {
     window.localStorage.setItem("token", payload.data.token);
     window.localStorage.setItem("username", payload.data.username);
@@ -42,7 +42,7 @@ function App() {
     window.localStorage.removeItem("id");
   };
 
-  const reducer = (state = initState, action) => {
+  const reducer = (state = props.state, action) => {
     switch (action.type) {
       case "LOGIN":
         saveToLocalStorage(action.payload);
@@ -69,7 +69,9 @@ function App() {
         return state;
     }
   }
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initState)
+  console.log(state, "new state appjs login");
+
   return (
     <UserProvider value={[state, dispatch]} >
       <div className="max-w-screen-2x w-screen-2xl mx-auto">

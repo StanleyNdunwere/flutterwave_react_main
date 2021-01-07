@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import CustomButton from "../global_components/button.component";
 import MerchantDetail from "../global_components/merchant_detail.component";
 import MerchantEditProduct from "./merchant_edit_product.component";
 import RiderDetail from "../global_components/rider_detail.component";
@@ -17,6 +16,8 @@ export default function MerchantDashboard(props) {
   const [allRiders, setAllRiders] = useState([]);
   const [rider, setRider] = useState({});
   const [products, setProducts] = useState([]);
+
+  console.log(state,"new state login");
 
   const userToken = state.token;
   const merchantId = state.id;

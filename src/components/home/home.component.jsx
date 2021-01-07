@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "./product_card.component.jsx";
 import empty from "../../assets/images/empty.jpg";
 import axios from "axios";
+import { apiUrl } from "../../configParams.js";
 
 export default function Home(props) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/products`).then((res) => {
+    axios.get(apiUrl + `products`).then((res) => {
       const products = res.data;
       if (products.status === "success") {
         setProducts(products.data.products);
@@ -42,7 +43,7 @@ export default function Home(props) {
           <h2 className="text-3xl font-extrabold m-auto font-nunito text-yellow-800">
             No products at this time
           </h2>
-          <img src={empty} alt="empty" className="w-2/5 mx-auto"/>
+          <img src={empty} alt="empty" className="w-2/5 mx-auto" />
         </div>
       )}
     </div>

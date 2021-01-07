@@ -10,9 +10,13 @@ export default function Header(props) {
   const location = useLocation();
 
   const [state, dispatch] = useContext(UserContext);
-
+  console.log(state);
   const handleSignUp = () => {
     history.push("/sign-up");
+  };
+
+  const goToDashboard = () => {
+    history.push("/" + state.accountType);
   };
 
   const handleLogout = (oldState, dispatch) => {
@@ -81,15 +85,25 @@ export default function Header(props) {
                   </div>
                 </>
               ) : (
-                <div className="ml-4">
-                  <CustomButton
-                    fontSize={"null"}
-                    execFunc={() => {
-                      handleLogout(state, dispatch);
+                <>
+                  <span
+                    onClick={() => {
+                      goToDashboard();
                     }}
-                    text="Log Out"
-                  />
-                </div>
+                    className="mx-2 font-nunito font-bold text-md text-gray-800 hover:text-yellow-700 my-auto cursor-pointer"
+                  >
+                    Dashboard
+                  </span>
+                  <div className="ml-4">
+                    <CustomButton
+                      fontSize={"null"}
+                      execFunc={() => {
+                        handleLogout(state, dispatch);
+                      }}
+                      text="Log Out"
+                    />
+                  </div>
+                </>
               )}
             </div>
           </div>

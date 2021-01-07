@@ -18,17 +18,7 @@ export default function MerchantEditProduct(props) {
         <p className="font-nunito font-extrabold text-lg text-gray-700 bg-white p-2 mx-6 rounded-full shadow-md text-center">
           {props.product.currencyCode} {props.product.price}
         </p>
-        <div className="grid grid-cols-2 px-3 justify-between items-center">
-          <p
-            onClick={() => {
-              history.push(
-                history.location.pathname + "/product/edit/" + props.product._id
-              );
-            }}
-            className="mr-2 py-2 px-3 cursor-pointer rounded-xl text-center font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
-          >
-            Edit
-          </p>
+        <div className="flex flex-row px-3 justify-center items-center">
           <p className="py-2 px-3 cursor-pointer rounded-xl text-center font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md">
             Delete
           </p>
