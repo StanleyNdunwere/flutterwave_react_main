@@ -8,8 +8,13 @@ import axios from "axios";
 import UserContext from "../../context/user.context";
 import Modal from "../global_components/modal.component";
 
-export default function ProductEditCreate(props) {
+export default function ProductEdit(props) {
   const history = useHistory();
+  const { id } = useParams();
+  let productId = "";
+  if (id != null || id != undefined) {
+    productId = id;
+  }
   const [state, dispatch] = useContext(UserContext);
   const userToken = state.token;
   const merchantId = state.id;

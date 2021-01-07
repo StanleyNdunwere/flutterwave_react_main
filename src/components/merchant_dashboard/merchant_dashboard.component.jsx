@@ -8,23 +8,24 @@ import UserHeader from "../global_components/user_header.component";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/user.context";
 import axios from "axios";
+import { apiUrl } from "../../configParams";
 
 export default function MerchantDashboard(props) {
   const history = useHistory();
-  const [state, dispatch] = useContext(UserContext)
-  const [userDetails, setUserDetails] = useState({})
-  const [allRiders, setAllRiders] = useState([])
-  const [rider, setRider] = useState({})
-  const [products, setProducts] = useState([])
+  const [state, dispatch] = useContext(UserContext);
+  const [userDetails, setUserDetails] = useState({});
+  const [allRiders, setAllRiders] = useState([]);
+  const [rider, setRider] = useState({});
+  const [products, setProducts] = useState([]);
 
   const userToken = state.token;
-  const merchantId = state.id
+  const merchantId = state.id;
 
   useEffect(() => {
     (async function getUserDet() {
       await getUserDetails();
     })();
-  }, [])
+  }, []);
 
   useEffect(() => {
     (async function getRiders() {
@@ -36,73 +37,72 @@ export default function MerchantDashboard(props) {
     (async function getProds() {
       await getAllProducts();
     })();
-  }, [])
+  }, []);
 
   const getUserDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/users/" + merchantId, {
+      const response = await axios.get(apiUrl + "users/" + merchantId, {
         headers: {
-          Authorization: 'Bearer ' + userToken,
-        }
-      })
-      console.log(response.data.data.user)
-      setUserDetails(response.data.data.user)
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data.user);
+      setUserDetails(response.data.data.user);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       //open modal here
     }
   };
 
-
   const getAllRiders = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/users/dispatch-riders", {
+      const response = await axios.get(apiUrl + "users/dispatch-riders", {
         headers: {
-          Authorization: 'Bearer ' + userToken,
-        }
-      })
-      console.log(response.data.data)
-      setAllRiders(response.data.data.riders)
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data);
+      setAllRiders(response.data.data.riders);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       //open modal here
     }
   };
 
   const getMerchantRider = async () => {
     try {
-      const response = await axios
-        .get("http://localhost:3000/merchant-dispatcher/dispatchers/" + merchantId, {
+      const response = await axios.get(
+        apiUrl + "merchant-dispatcher/dispatchers/" + merchantId,
+        {
           headers: {
-            Authorization: 'Bearer ' + userToken,
-          }
-        })
-      console.log(response.data.data)
-      setRider(response.data.data.dispatchers)
+            Authorization: "Bearer " + userToken,
+          },
+        }
+      );
+      console.log(response.data.data);
+      setRider(response.data.data.dispatchers);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       //open modal here
     }
   };
 
   const getAllProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/products/merchant", {
+      const response = await axios.get(apiUrl + "products/merchant", {
         headers: {
-          Authorization: 'Bearer ' + userToken,
-        }
-      })
-      console.log(response.data.data)
-      setProducts(response.data.data.products)
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data);
+      setProducts(response.data.data.products);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       //open modal here
     }
   };
 
-
-  const getAllTransaction = () => { };
-
+  const getAllTransaction = () => {};
   return (
     <div className="max-w-full w-full my-2 px-8">
       <div className="w-full h-full ">
@@ -112,7 +112,10 @@ export default function MerchantDashboard(props) {
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
             <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <MerchantDetail merchantDetails={userDetails} userType="merchant" />
+              <MerchantDetail
+                merchantDetails={userDetails}
+                userType="merchant"
+              />
               <br></br>
               <RiderDetail userType="merchant" riderDetails={rider} />
             </div>
@@ -144,15 +147,22 @@ export default function MerchantDashboard(props) {
                   </p>
                 </div>
                 <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll">
-                  {products.length === 0 ?
+                  {products.length === 0 ? (
                     <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
-                      <h2 className='p-8 rounded-xl bg-yellow-100'>No products attached to your account. Add new products</h2>
-                    </div> :
+                      <h2 className="p-8 rounded-xl bg-yellow-100">
+                        No products attached to your account. Add new products
+                      </h2>
+                    </div>
+                  ) : (
                     products.map((product) => {
-                      return <MerchantEditProduct product={product}/>
+                      return (
+                        <MerchantEditProduct
+                          key={product.name}
+                          product={product}
+                        />
+                      );
                     })
-                  }
-
+                  )}
                 </div>
               </div>
               <br />

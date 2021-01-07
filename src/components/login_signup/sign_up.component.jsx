@@ -3,6 +3,7 @@ import shop from "../../assets/images/shop.svg";
 import CustomButton from "../global_components/button.component";
 import axios from "axios";
 import Modal from "../global_components/modal.component";
+import { apiUrl } from "../../configParams";
 
 export default function SignUpComponent(props) {
   const [signUpDetails, setSignUpDetails] = useState({});
@@ -18,20 +19,25 @@ export default function SignUpComponent(props) {
 
   const formIsFilled = () => {
     const values = Object.keys(signUpDetails);
-    return !(values.length < 7);
+    console.log(values);
+    // for (const [key, value] of Object.entries(productInfo)) {
+    //   formData.append(`${key}`, value);
+    // }
+    return !(values.length < 8);
   };
 
   const submitSignUpForm = async (signUpDetails) => {
     try {
       const response = await axios({
         method: "post",
-        url: "http://localhost:3000/users/sign-up",
+        url: apiUrl + "users/sign-up",
         data: signUpDetails,
       });
+      console.log(response.data);
       setShowModal(true);
       setModalContent({
         title: response.data.status,
-        message: response.data.data.message,
+        message: response.data.message,
       });
     } catch (err) {
       console.log(err);
@@ -39,7 +45,7 @@ export default function SignUpComponent(props) {
   };
 
   const fetchAllBanksByCode = (bankCode) => {
-    const url = "http://localhost:3000/country-currency/bank-codes/";
+    const url = apiUrl + "country-currency/bank-codes/";
     axios.get(url + bankCode).then((res) => {
       const banks = res.data;
       if (banks.status === "success") {

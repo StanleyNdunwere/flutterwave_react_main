@@ -1,4 +1,7 @@
 import './App.css';
+import env from 'dotenv'
+// const env = require('dotenv');
+
 import { Route, Switch, Redirect } from "react-router-dom"
 import { UserProvider } from "./context/user.context"
 import UserContext from './context/user.context'
@@ -8,13 +11,23 @@ import SignUpComponent from './components/login_signup/sign_up.component';
 import LoginComponent from './components/login_signup/login.component';
 import Product from './components/product/product.component';
 import ProductEditCreate from './components/product_edit/edit_create_product.component';
+import ProductEdit from './components/product_edit/edit_create_product.component';
 import MerchantDashboard from './components/merchant_dashboard/merchant_dashboard.component';
 import RiderDashboard from '../src/components/rider_dashboard/rider_dashboard.component';
 import AdminDashBoard from './components/admin_dashboard/admin_dashboard.component';
-import { useContext, useReducer } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import AdminTransaction from './components/admin_dashboard/admin_transactions.component';
-
+env.config({ path: __dirname + '/.env' });
 function App() {
+  let initialState = {
+    token: window.localStorage.getItem("token"),
+    username: window.localStorage.getItem("username"),
+    accountType: window.localStorage.getItem("accountType"),
+    id: window.localStorage.getItem("id"),
+    loggedIn: false
+  };
+  const [initState, setInitState] = useState(initialState);
+
   const saveToLocalStorage = (payload) => {
     window.localStorage.setItem("token", payload.data.token);
     window.localStorage.setItem("username", payload.data.username);
@@ -29,15 +42,7 @@ function App() {
     window.localStorage.removeItem("id");
   };
 
-  let initialState = {
-    token: window.localStorage.getItem("token"),
-    username: window.localStorage.getItem("username"),
-    accountType: window.localStorage.getItem("accountType"),
-    id: window.localStorage.getItem("id"),
-    loggedIn: false
-  };
-
-  const reducer = (state = initialState, action) => {
+  const reducer = (state = initState, action) => {
     switch (action.type) {
       case "LOGIN":
         saveToLocalStorage(action.payload);
@@ -78,7 +83,8 @@ function App() {
           <PrivateRoute component={MerchantDashboard} exact path="/merchant" userType="/merchant" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/dispatch" userType="/dispatch_rider" userState={state} />
           <PrivateRoute component={ProductEditCreate} exact path="/merchant/product" userType="/merchant" userState={state} />
-          <PrivateRoute component={Product} exact path="/merchant/product/:id" userType="/merchant" userState={state} />
+          <PrivateRoute component={Product} exact path="/merchant/product/" userType="/merchant" userState={state} />
+          <PrivateRoute component={ProductEdit} exact path="/merchant/product/edit/:id" userType="/merchant" userState={state} />
 
           {/* <Product /> */}
           {/* <ProductEditCreate/> */}

@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import UserContext from "../../context/user.context";
+import CustomButton from "./button.component";
 
 export default function UserHeader(props) {
-  // console.log(props.riders)
+  console.log(props.riders);
   const [state, dispatch] = useContext(UserContext);
   return (
     <>
@@ -18,13 +19,23 @@ export default function UserHeader(props) {
             <select
               name="riderId"
               id="riderId"
-              className="py-2 px-5 outline-none border-yellow-700 border-2 rounded-xl"
+              className="py-2 px-5 mr-5 outline-none border-yellow-700 border-2 rounded-xl"
             >
               <option value=""></option>
               {props.riders.map((rider) => {
-                return (<option value={rider.id}> rider.username</option>)
+                console.log(rider);
+                return (
+                  <option key={rider._id} value={rider._id}>
+                    {rider.username}
+                  </option>
+                );
               })}
             </select>
+            <CustomButton
+              text="Add Rider"
+              fontSize={"1rem"}
+              execFunc={() => {}}
+            />
           </>
         )}
       </div>

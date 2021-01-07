@@ -9,7 +9,7 @@ export default function Product(props) {
       <div className="mx-10 w-productDetail overflow-hidden shadow-around rounded-4xl h-productDetail self-start">
         <img
           src="https://source.unsplash.com/random/800x800"
-          className="mx-auto w-full h-full"
+          className="mx-auto w-full h-full object-cover"
           alt="product"
         />
       </div>
