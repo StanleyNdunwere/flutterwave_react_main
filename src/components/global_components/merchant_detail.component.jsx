@@ -1,8 +1,9 @@
 import React from "react";
 
 export default function MerchantDetail(props) {
+
   return (
-    <div className="rounded-2xl border-yellow-500 border-2 p-4 w-full">
+    <div className="rounded-2xl border-yellow-500 border-2 py-4 px-4 w-full">
       <div className="flex flex-row items-center mb-3">
         <p className="text-3xl font-nunito font-bold">
           {props.userType === "merchant" ? "Your Details" : "Your Merchant"}
@@ -18,25 +19,30 @@ export default function MerchantDetail(props) {
       <div>
         <p className="font-nunito font-extrabold text-yellow-600 py-4">
           Username:
-          <span className="text-gray-800"> Your Username</span>
+          <span className="text-gray-800"> {props.merchantDetails.username}</span>
         </p>
       </div>
       <div>
         <p className="font-nunito font-extrabold text-yellow-600 pb-4">
           Account No:
-          <span className="text-gray-800"> Your Acc No: </span>
+          <span className="text-gray-800"> {props.merchantDetails.accountNumber} </span>
+        </p>
+      </div>
+      <div>
+        <p className="font-nunito font-extrabold text-yellow-600 pb-4">
+          Bank Name:
+          <span className="text-gray-800"> {props.merchantDetails.bankName} </span>
         </p>
       </div>
       <div>
         <p className="font-nunito font-extrabold text-yellow-600 pb-4">
           SubAccountId:
-          <span className="text-gray-800"> Your SubAccount Id: </span>
+          <span className="text-gray-800"> {props.merchantDetails.subAccountId} </span>
         </p>
       </div>
       <div className="overflow-hidden ">
-        <p className="font-nunito font-extrabold text-yellow-600 pb-4">
-          Key:{" "}
-          <span className="text-gray-800"> TR_YeafU899Yksdd4023j34JJJf</span>
+        <p className="font-nunito font-extrabold text-yellow-600 pb-4">Key:
+          <span className="text-gray-800  font-extrabold text-md"> {props.merchantDetails.subAccountIdKey}</span>
         </p>
       </div>
     </div>

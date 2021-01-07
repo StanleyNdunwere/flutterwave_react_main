@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import UserContext from "../../context/user.context";
 
 export default function UserHeader(props) {
+  // console.log(props.riders)
   const [state, dispatch] = useContext(UserContext);
   return (
     <>
@@ -20,10 +21,9 @@ export default function UserHeader(props) {
               className="py-2 px-5 outline-none border-yellow-700 border-2 rounded-xl"
             >
               <option value=""></option>
-              <option value="riderId"> Rider 1</option>
-              <option value="riderId">Rider 1</option>
-              <option value="riderId">Rider 1</option>
-              <option value="riderId">Rider 1</option>
+              {props.riders.map((rider) => {
+                return (<option value={rider.id}> rider.username</option>)
+              })}
             </select>
           </>
         )}

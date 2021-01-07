@@ -19,18 +19,21 @@ function App() {
     window.localStorage.setItem("token", payload.data.token);
     window.localStorage.setItem("username", payload.data.username);
     window.localStorage.setItem("accountType", payload.data.accountType);
+    window.localStorage.setItem("id", payload.data.id);
   };
 
   const removeFromLocalStorage = () => {
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("username");
     window.localStorage.removeItem("accountType");
+    window.localStorage.removeItem("id");
   };
 
   let initialState = {
     token: window.localStorage.getItem("token"),
     username: window.localStorage.getItem("username"),
     accountType: window.localStorage.getItem("accountType"),
+    id: window.localStorage.getItem("id"),
     loggedIn: false
   };
 
@@ -38,11 +41,13 @@ function App() {
     switch (action.type) {
       case "LOGIN":
         saveToLocalStorage(action.payload);
+        console.log(action.payload)
         return {
           ...state,
           token: action.payload.data.token,
           username: action.payload.data.username,
           accountType: action.payload.data.accountType,
+          id: action.payload.data.id,
           loggedIn: true
         }
       case "LOGOUT":
@@ -52,6 +57,7 @@ function App() {
           token: null,
           username: null,
           accountType: null,
+          id: null,
           loggedIn: false,
         }
       default:
@@ -72,6 +78,7 @@ function App() {
           <PrivateRoute component={MerchantDashboard} exact path="/merchant" userType="/merchant" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/dispatch" userType="/dispatch_rider" userState={state} />
           <PrivateRoute component={ProductEditCreate} exact path="/merchant/product" userType="/merchant" userState={state} />
+          <PrivateRoute component={Product} exact path="/merchant/product/:id" userType="/merchant" userState={state} />
 
           {/* <Product /> */}
           {/* <ProductEditCreate/> */}
@@ -86,7 +93,7 @@ function App() {
 export default App;
 
 
-function PrivateRoute(props) {
+export function PrivateRoute(props) {
   const { component: Component, ...rest } = { ...props }
   const loggedIn = props.userState.token !== null || props.userState.token !== undefined;
   let fallbackPath = "/";
@@ -117,37 +124,8 @@ function PrivateRoute(props) {
 }
 
 
-function PrivateAdminRoute(props) {
-  const { component: Component, fallbackPath, ...rest } = { ...props }
-  let loggedIn = (window.localStorage.getItem("logged_in")) === 'true'
-  return (
-    <Route {...rest} render=
-      {(props) => loggedIn ? <Component {...props} /> : <Redirect to={fallbackPath} {...props} />}>
-    </Route>
-  )
-}
 
-function PrivateMerchantRoute(props) {
-  const { component: Component, fallbackPath, ...rest } = { ...props }
-  let loggedIn = (window.localStorage.getItem("logged_in")) === 'true'
-  return (
-    <Route {...rest} render=
-      {(props) => loggedIn ? <Component {...props} /> : <Redirect to={fallbackPath} {...props} />}>
-    </Route>
-  )
-}
-
-function PrivateDispatchRoute(props) {
-  const { component: Component, fallbackPath, ...rest } = { ...props }
-  let loggedIn = (window.localStorage.getItem("logged_in")) === 'true'
-  return (
-    <Route {...rest} render=
-      {(props) => loggedIn ? <Component {...props} /> : <Redirect to={fallbackPath} {...props} />}>
-    </Route>
-  )
-}
-
-function PublicRoute(props) {
+export function PublicRoute(props) {
   const { component: Component, restricted, fallbackPath, ...rest } = { ...props }
   let loggedIn = (window.localStorage.getItem("logged_in")) === 'true'
   return (

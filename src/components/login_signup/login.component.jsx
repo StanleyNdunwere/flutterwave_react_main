@@ -37,7 +37,7 @@ export default function LoginComponent(props) {
           message: response.data.message,
         });
       } else {
-        const a = dispatch({ type: "LOGIN", payload: response.data });
+        dispatch({ type: "LOGIN", payload: response.data });
         history.replace(`/${response.data.data.accountType}`);
       }
     } catch (err) {

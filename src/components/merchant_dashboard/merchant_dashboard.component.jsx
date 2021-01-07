@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomButton from "../global_components/button.component";
 import MerchantDetail from "../global_components/merchant_detail.component";
 import MerchantEditProduct from "./merchant_edit_product.component";
@@ -6,32 +6,115 @@ import RiderDetail from "../global_components/rider_detail.component";
 import Transaction from "../global_components/transaction.component";
 import UserHeader from "../global_components/user_header.component";
 import { useHistory } from "react-router-dom";
+import UserContext from "../../context/user.context";
+import axios from "axios";
 
 export default function MerchantDashboard(props) {
   const history = useHistory();
+  const [state, dispatch] = useContext(UserContext)
+  const [userDetails, setUserDetails] = useState({})
+  const [allRiders, setAllRiders] = useState([])
+  const [rider, setRider] = useState({})
+  const [products, setProducts] = useState([])
 
-  const getUserDetails = () => {};
+  const userToken = state.token;
+  const merchantId = state.id
 
-  const getRiderDetails = () => {};
+  useEffect(() => {
+    (async function getUserDet() {
+      await getUserDetails();
+    })();
+  }, [])
 
-  const getAllProducts = () => {};
+  useEffect(() => {
+    (async function getRiders() {
+      await getAllRiders();
+    })();
+    (async function getMerchRider() {
+      await getMerchantRider();
+    })();
+    (async function getProds() {
+      await getAllProducts();
+    })();
+  }, [])
 
-  const getAllRiders = () => {};
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/users/" + merchantId, {
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+        }
+      })
+      console.log(response.data.data.user)
+      setUserDetails(response.data.data.user)
+    } catch (err) {
+      console.log(err)
+      //open modal here
+    }
+  };
 
-  const getAllTransaction = () => {};
+
+  const getAllRiders = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/users/dispatch-riders", {
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+        }
+      })
+      console.log(response.data.data)
+      setAllRiders(response.data.data.riders)
+    } catch (err) {
+      console.log(err)
+      //open modal here
+    }
+  };
+
+  const getMerchantRider = async () => {
+    try {
+      const response = await axios
+        .get("http://localhost:3000/merchant-dispatcher/dispatchers/" + merchantId, {
+          headers: {
+            Authorization: 'Bearer ' + userToken,
+          }
+        })
+      console.log(response.data.data)
+      setRider(response.data.data.dispatchers)
+    } catch (err) {
+      console.log(err)
+      //open modal here
+    }
+  };
+
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/products/merchant", {
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+        }
+      })
+      console.log(response.data.data)
+      setProducts(response.data.data.products)
+    } catch (err) {
+      console.log(err)
+      //open modal here
+    }
+  };
+
+
+  const getAllTransaction = () => { };
 
   return (
     <div className="max-w-full w-full my-2 px-8">
       <div className="w-full h-full ">
         <div className="flex flex-row justify-between items-center mb-3">
-          <UserHeader userType="merchant" />
+          <UserHeader userType="merchant" riders={allRiders} />
         </div>
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
             <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <MerchantDetail userType="merchant" />
+              <MerchantDetail merchantDetails={userDetails} userType="merchant" />
               <br></br>
-              <RiderDetail userType="merchant" />
+              <RiderDetail userType="merchant" riderDetails={rider} />
             </div>
           </div>
           <div className="max-w-full min-w-0">
@@ -55,17 +138,21 @@ export default function MerchantDashboard(props) {
                     onClick={() => {
                       history.push(history.location.pathname + "/product");
                     }}
-                    className="py-2 px-6 rounded-xl text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
+                    className="py-2 px-6 rounded-xl cursor-pointer text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
                   >
                     Add New Product
                   </p>
                 </div>
                 <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll">
-                  <MerchantEditProduct />
-                  <MerchantEditProduct />
-                  <MerchantEditProduct />
-                  <MerchantEditProduct />
-                  <MerchantEditProduct />
+                  {products.length === 0 ?
+                    <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
+                      <h2 className='p-8 rounded-xl bg-yellow-100'>No products attached to your account. Add new products</h2>
+                    </div> :
+                    products.map((product) => {
+                      return <MerchantEditProduct product={product}/>
+                    })
+                  }
+
                 </div>
               </div>
               <br />

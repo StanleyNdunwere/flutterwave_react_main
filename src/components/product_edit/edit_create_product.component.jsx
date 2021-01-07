@@ -35,7 +35,6 @@ export default function ProductEditCreate(props) {
           <div className="w-4/5">
             <div>
               <p
-                for="productName"
                 className="font-nunito font-bold py-0  text-yellow-600"
               >
                 Set Product name:
@@ -48,7 +47,6 @@ export default function ProductEditCreate(props) {
             </div>
             <div>
               <p
-                for="description"
                 className="font-nunito font-bold py-0  text-yellow-600"
               >
                 Description:
@@ -62,7 +60,6 @@ export default function ProductEditCreate(props) {
             </div>
             <div>
               <p
-                for="price"
                 className="font-nunito font-bold py-0  text-yellow-600"
               >
                 Set Product Price:
@@ -75,7 +72,6 @@ export default function ProductEditCreate(props) {
             </div>
             <div>
               <p
-                for="delivery"
                 className="font-nunito font-bold py-0 text-yellow-600"
               >
                 Set Delivery Cost Per Unit Product:
