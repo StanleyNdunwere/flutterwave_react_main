@@ -27,7 +27,7 @@ export default function ProductEditCreate(props) {
   };
 
   useEffect(() => {
-    (async function fetchProduct() {})();
+    (async function fetchProduct() { })();
   }, []);
 
   const createNewProduct = async () => {
@@ -194,13 +194,13 @@ export default function ProductEditCreate(props) {
                 <div className="flex flex-row mt-4">
                   <div
                     className="mr-4"
-                    // onClick={() => {
-                    //   let formData = new FormData();
-                    //   formData.append("a", "dddddddddddddddddddddddd");
-                    //   for (let pair of formData.entries()) {
-                    //     console.log(pair[0] + ", " + pair[1]);
-                    //   }
-                    // }}
+                  // onClick={() => {
+                  //   let formData = new FormData();
+                  //   formData.append("a", "dddddddddddddddddddddddd");
+                  //   for (let pair of formData.entries()) {
+                  //     console.log(pair[0] + ", " + pair[1]);
+                  //   }
+                  // }}
                   >
                     <CustomButton
                       fontSize={"1.2rem"}
@@ -208,6 +208,7 @@ export default function ProductEditCreate(props) {
                       execFunc={() => {
                         console.log(productInfo);
                         createNewProduct();
+                        history.goBack()
                       }}
                     />
                   </div>

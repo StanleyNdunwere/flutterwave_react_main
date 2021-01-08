@@ -38,7 +38,16 @@ export default function LoginComponent(props) {
         });
       } else {
         dispatch({ type: "LOGIN", payload: response.data });
-        history.replace(`/${response.data.data.accountType}`);
+        let link = "";
+        if (response.data.data.accountType === "dispatch_rider") {
+          link = "dispatch"
+        } else if (response.data.data.accountType === "admin") {
+          link = "admin"
+        }
+        else if (response.data.data.accountType === "merchant") {
+          link = "merchant"
+        }
+        history.replace(`/${link}`);
       }
     } catch (err) {
       console.log(err);

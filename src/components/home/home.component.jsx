@@ -34,18 +34,19 @@ export default function Home(props) {
                 productPrice={product.price}
                 currencyCode={product.currencyCode}
                 imageLink={product.productImageLink}
+                id={product._id}
               />
             );
           })}
         </div>
       ) : (
-        <div className="text-4xl font-extrabld m-auto text-center py-20">
-          <h2 className="text-3xl font-extrabold m-auto font-nunito text-yellow-800">
-            No products at this time
+          <div className="text-4xl font-extrabld m-auto text-center py-20">
+            <h2 className="text-3xl font-extrabold m-auto font-nunito text-yellow-800">
+              No products at this time
           </h2>
-          <img src={empty} alt="empty" className="w-2/5 mx-auto" />
-        </div>
-      )}
+            <img src={empty} alt="empty" className="w-2/5 mx-auto" />
+          </div>
+        )}
     </div>
   );
 }

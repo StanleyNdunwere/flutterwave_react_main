@@ -1,7 +1,10 @@
 import React from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { apiUrl } from '../../configParams'
 import CustomButton from "../global_components/button.component"
 
 export default function ProductCard(props) {
+  const history = useHistory()
   return (
     <div className="">
       <div className="h-80 bg-gray-200 rounded-2xl shadow-lg relative overflow-hidden" >
@@ -15,7 +18,12 @@ export default function ProductCard(props) {
           <div className="px-6 py-2 bg-yellow-200 w-full text-center">
             <p className="text-gray-800 font-semibold text-md font-nunito">{props.productName}</p>
             <div className="px-6 py-2">
-              <CustomButton text={"Buy Now"} fontSize={"1rem"} execFunction={null} />
+              <CustomButton text={"Buy Now"}
+                fontSize={"1rem"}
+                execFunc={() => {
+                  console.log(history.location.pathname)
+                  history.push("/product/" + props.id)
+                }} />
             </div>
           </div>
         </div>

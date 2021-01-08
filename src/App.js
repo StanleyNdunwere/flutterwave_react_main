@@ -80,10 +80,11 @@ function App(props) {
           <Route path='/' exact component={Home} />
           <Route path="/sign-up" exact component={SignUpComponent} />
           <Route path="/login" exact component={LoginComponent} />
+          <Route component={Product} exact path="/product/:id" />
           {/* <Route path="/admin" exact component={AdminDashBoard} /> */}
           <PrivateRoute component={AdminDashBoard} exact path="/admin" userType="/admin" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/merchant" userType="/merchant" userState={state} />
-          <PrivateRoute component={MerchantDashboard} exact path="/dispatch" userType="/dispatch_rider" userState={state} />
+          <PrivateRoute component={RiderDashboard} exact path="/dispatch" userType="/dispatch_rider" userState={state} />
           <PrivateRoute component={ProductEditCreate} exact path="/merchant/product" userType="/merchant" userState={state} />
           <PrivateRoute component={Product} exact path="/merchant/product/" userType="/merchant" userState={state} />
           <PrivateRoute component={ProductEdit} exact path="/merchant/product/edit/:id" userType="/merchant" userState={state} />

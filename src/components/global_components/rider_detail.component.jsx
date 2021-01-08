@@ -1,9 +1,11 @@
 import React from "react";
 
 export default function RiderDetail(props) {
+
+  console.log(props.riderDetails)
   return (
     <>
-      {props.rider ? <div className="rounded-2xl border-yellow-500 border-2 p-4 w-full">
+      {props.riderDetails ? <div className="rounded-2xl border-yellow-500 border-2 p-4 w-full">
         <div className="flex flex-row items-center mb-3">
           <p className="text-3xl font-nunito font-bold">
             {props.userType === "dispatch_rider" ? "Your Details" : "Your Rider"}
@@ -18,26 +20,32 @@ export default function RiderDetail(props) {
         </div>
         <div>
           <p className="font-nunito font-extrabold text-yellow-600 py-4">
-            Username:
-        <span className="text-gray-800"> Username</span>
+          Username: 
+        <span className="text-gray-800"> {props.riderDetails.username}</span>
           </p>
         </div>
         <div>
           <p className="font-nunito font-extrabold text-yellow-600 pb-4">
             Account No:
-        <span className="text-gray-800"> Your Acc No: </span>
+        <span className="text-gray-800"> {props.riderDetails.accountNumber} </span>
           </p>
         </div>
         <div>
+        <p className="font-nunito font-extrabold text-yellow-600 pb-4">
+          Bank Name:
+          <span className="text-gray-800"> {props.riderDetails.bankName} </span>
+        </p>
+      </div>
+        <div>
           <p className="font-nunito font-extrabold text-yellow-600 pb-4">
             SubAccountId:
-        <span className="text-gray-800"> Your SubAccount Id: </span>
+        <span className="text-gray-800"> {props.riderDetails.subAccountId}</span>
           </p>
         </div>
         <div className="overflow-hidden ">
           <p className="font-nunito font-extrabold text-yellow-600 pb-4">
             Key:{" "}
-            <span className="text-gray-800"> TR_YeafU899Yksdd4023j34JJJf</span>
+            <span className="text-gray-800"> {props.riderDetails.subAccountIdKey}</span>
           </p>
         </div>
       </div> :

@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import UserContext from "../../context/user.context";
 import axios from "axios";
 import { apiUrl } from "../../configParams";
+import Modal from "../global_components/modal.component";
 
 export default function MerchantDashboard(props) {
   const history = useHistory();
@@ -16,11 +17,22 @@ export default function MerchantDashboard(props) {
   const [allRiders, setAllRiders] = useState([]);
   const [rider, setRider] = useState({});
   const [products, setProducts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
-  console.log(state,"new state login");
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleShowModal = (title, message) => {
+    setShowModal(true)
+    setModalContent({ title: title, message: message })
+  }
 
   const userToken = state.token;
   const merchantId = state.id;
+
+
 
   useEffect(() => {
     (async function getUserDet() {
@@ -52,6 +64,7 @@ export default function MerchantDashboard(props) {
     } catch (err) {
       console.log(err);
       //open modal here
+      handleShowModal("Error", "Failed to load Resource")
     }
   };
 
@@ -67,6 +80,7 @@ export default function MerchantDashboard(props) {
     } catch (err) {
       console.log(err);
       //open modal here
+      handleShowModal("Error", "Failed to load Resource")
     }
   };
 
@@ -81,10 +95,11 @@ export default function MerchantDashboard(props) {
         }
       );
       console.log(response.data.data);
-      setRider(response.data.data.dispatchers);
+      setRider(response.data.data.dispatchers[0]);
     } catch (err) {
       console.log(err);
       //open modal here
+      handleShowModal("Error", "Failed to load Resource")
     }
   };
 
@@ -97,18 +112,80 @@ export default function MerchantDashboard(props) {
       });
       console.log(response.data.data);
       setProducts(response.data.data.products);
+
     } catch (err) {
       console.log(err);
-      //open modal here
+      handleShowModal("Error", "Failed to load Resource")
     }
   };
 
-  const getAllTransaction = () => {};
+  const deleteProduct = async (merchantId, productId) => {
+    try {
+      const response = await axios({
+        method: 'delete',
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+        },
+        url: apiUrl + "products/" + productId,
+        data: {
+          merchantId: merchantId,
+          dispatcherId: productId
+        },
+      });
+      console.log(response.data.data)
+      if (response.data.status === "success") {
+        getAllProducts();
+        handleShowModal("Success", "Deleted Successfully")
+
+      }
+    } catch (err) {
+      console.log(err)
+      handleShowModal("Error", "Failed to load Resource")
+    }
+  }
+
+  const addMerchantToRider = async (merchantId, dispatcherId) => {
+    try {
+      const response = await axios({
+        method: 'patch',
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+        },
+        url: apiUrl + "merchant-dispatcher",
+        data: {
+          merchantId: merchantId,
+          dispatcherId: dispatcherId
+        },
+      });
+      console.log(response.data.data)
+      if (response.data.status === "success") {
+        getAllRiders();
+        handleShowModal("Success", "Added Successfully")
+      }else{
+      handleShowModal("Failed", response.data.data.message)
+
+      }
+    } catch (err) {
+      console.log(err)
+      handleShowModal("Error", "Failed to load Resource")
+    }
+  }
+
+  const getAllTransaction = () => { };
   return (
     <div className="max-w-full w-full my-2 px-8">
+      {showModal && (
+        <Modal
+          closeModal={() => {
+            closeModal();
+          }}
+          message={modalContent.message}
+          title={modalContent.title}
+        />
+      )}
       <div className="w-full h-full ">
         <div className="flex flex-row justify-between items-center mb-3">
-          <UserHeader userType="merchant" riders={allRiders} />
+          <UserHeader userType="merchant" riders={allRiders} addMerchantToRider={addMerchantToRider} merchantId={merchantId} />
         </div>
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
@@ -147,7 +224,7 @@ export default function MerchantDashboard(props) {
                     Add New Product
                   </p>
                 </div>
-                <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll">
+                <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll z-index-0">
                   {products.length === 0 ? (
                     <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
                       <h2 className="p-8 rounded-xl bg-yellow-100">
@@ -155,15 +232,17 @@ export default function MerchantDashboard(props) {
                       </h2>
                     </div>
                   ) : (
-                    products.map((product) => {
-                      return (
-                        <MerchantEditProduct
-                          key={product.name}
-                          product={product}
-                        />
-                      );
-                    })
-                  )}
+                      products.map((product) => {
+                        return (
+                          <MerchantEditProduct
+                            key={product.name}
+                            product={product}
+                            deleteProduct={deleteProduct}
+                            merchantId={merchantId}
+                          />
+                        );
+                      })
+                    )}
                 </div>
               </div>
               <br />
