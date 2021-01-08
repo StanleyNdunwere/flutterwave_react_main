@@ -195,7 +195,7 @@ export default function MerchantDashboard(props) {
                 userType="merchant"
               />
               <br></br>
-              <RiderDetail userType="merchant" riderDetails={rider} />
+              <RiderDetail userType="dispatch" riderDetails={rider} />
             </div>
           </div>
           <div className="max-w-full min-w-0">

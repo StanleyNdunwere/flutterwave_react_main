@@ -1,6 +1,10 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { apiUrl } from "../../configParams";
+import UserContext from "../../context/user.context";
 import MerchantDetail from "../global_components/merchant_detail.component";
+import Modal from "../global_components/modal.component";
 import RiderDetail from "../global_components/rider_detail.component";
 import Transaction from "../global_components/transaction.component";
 import UserHeader from "../global_components/user_header.component";
@@ -11,19 +15,122 @@ import MerchantRiderDetail from "./merchant_rider_detail.component";
 
 export default function AdminDashBoard(props) {
   const history = useHistory();
+  const [state, dispatch] = useContext(UserContext);
+  const [userDetails, setUserDetails] = useState({});
+  const [riders, setRiders] = useState([]);
+  const [merchants, setMerchants] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
-  const getUserDetails = () => {};
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
-  const getRiderDetails = () => {};
+  const handleShowModal = (title, message) => {
+    setShowModal(true);
+    setModalContent({ title: title, message: message });
+  };
 
-  const getAllProducts = () => {};
+  const userToken = state.token;
+  const adminId = state.id;
 
-  const getAllRiders = () => {};
+  useEffect(() => {
+    (async function getAdminInfo() {
+      getUserDetails();
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async function getRiders() {
+      getAllRiders();
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async function getMerchants() {
+      getAllMerchants();
+    })();
+  }, []);
+
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get(apiUrl + "users/" + adminId, {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data.user);
+      setUserDetails(response.data.data.user);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
+
+  const deleteUser = async (userId, userType) => {
+    try {
+      const response = await axios({
+        method: "delete",
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+        url: apiUrl + "users/" + userId,
+      });
+      console.log(response.data.data);
+      if (response.data.status === "success") {
+        if (userType === "merchant") getAllMerchants();
+        else getAllRiders();
+        handleShowModal("Success", "Deleted Successfully");
+      }
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
+
+  const getAllMerchants = async () => {
+    try {
+      const response = await axios.get(apiUrl + "users/merchants", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data.merchants, "the mrecants");
+      setMerchants(response.data.data.merchants);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
+
+  const getAllRiders = async () => {
+    try {
+      const response = await axios.get(apiUrl + "users/dispatch-riders", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data.riders, "the riders");
+      setRiders(response.data.data.riders);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
 
   const getAllTransaction = () => {};
 
   return (
     <div className="max-w-full w-full my-2 px-8">
+      {showModal && (
+        <Modal
+          closeModal={() => {
+            closeModal();
+          }}
+          message={modalContent.message}
+          title={modalContent.title}
+        />
+      )}
       <div className="w-full h-full ">
         <div className="flex flex-row justify-between items-center mb-3">
           <UserHeader userType="admin" />
@@ -31,9 +138,21 @@ export default function AdminDashBoard(props) {
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
             <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <MerchantRiderList />
+              <MerchantRiderList
+                title={"All Merchants"}
+                userType="Merchant"
+                users={merchants}
+                delete={deleteUser}
+                view={null}
+              />
               <br></br>
-              <MerchantRiderList />
+              <MerchantRiderList
+                title={"All Riders"}
+                userType="Rider"
+                users={riders}
+                delete={deleteUser}
+                view={null}
+              />
             </div>
           </div>
           <div className="max-w-full min-w-0">

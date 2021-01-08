@@ -16,7 +16,11 @@ export default function Header(props) {
   };
 
   const goToDashboard = () => {
-    history.push("/" + state.accountType);
+    let path =
+      state.accountType === "dispatch_rider"
+        ? "dispatch"
+        : state.accountType;
+    history.push("/" + path);
   };
 
   const handleLogout = (oldState, dispatch) => {

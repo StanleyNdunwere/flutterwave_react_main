@@ -2,7 +2,7 @@ import React from "react";
 
 export default function RiderDetail(props) {
 
-  console.log(props.riderDetails)
+  // console.log(props.riderDetails)
   return (
     <>
       {props.riderDetails ? <div className="rounded-2xl border-yellow-500 border-2 p-4 w-full">

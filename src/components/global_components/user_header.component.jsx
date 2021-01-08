@@ -3,9 +3,9 @@ import UserContext from "../../context/user.context";
 import CustomButton from "./button.component";
 
 export default function UserHeader(props) {
-  console.log(props.riders);
+  // console.log(props.riders);
   const [state, dispatch] = useContext(UserContext);
-  const [selectedRider, setSelectedRider] = useState()
+  const [selectedRider, setSelectedRider] = useState();
   return (
     <>
       <h3 className="font-nunito text-4xl font-bold py-1">
@@ -19,7 +19,7 @@ export default function UserHeader(props) {
             </span>
             <select
               onChange={(e) => {
-                setSelectedRider(e.target.value)
+                setSelectedRider(e.target.value);
               }}
               name="riderId"
               id="riderId"
@@ -39,8 +39,8 @@ export default function UserHeader(props) {
               text="Add Rider"
               fontSize={"1rem"}
               execFunc={() => {
-                // console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-                props.addMerchantToRider(props.merchantId, selectedRider)
+                if (props.addMerchantToRider != null)
+                  props.addMerchantToRider(props.merchantId, selectedRider);
               }}
             />
           </>
