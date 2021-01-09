@@ -2,21 +2,44 @@ import React, { useContext, useEffect, useState } from "react";
 import CustomButton from "../global_components/button.component";
 import addSign from "../../assets/images/addSign.svg";
 import minus from "../../assets/images/minus.svg";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import axios from 'axios'
 import { apiUrl } from "../../configParams";
 import UserContext from "../../context/user.context";
-
+import Modal from "../global_components/modal.component";
+import { v4 as uuidv4 } from 'uuid'
 export default function Product(props) {
-
   const { id } = useParams()
-  console.log(id, "iddddddddddddddddddddddddddddddd")
+  const history = useHistory();
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
   const [state, dispatch] = useContext(UserContext);
   const [productInfo, setProductInfo] = useState({})
   const [purchaseInfo, setPurchaseInfo] = useState({
     id: id,
     quantity: 1
   })
+  const [cartItem, setCartItem] = useState({ itemQuantity: 1 })
+  const [guestName, setGuestName] = useState("")
+  const isLoggedIn = state.token != null;
+
+  const closeModal = () => {
+    setShowModal(false);
+    history.push("/")
+  };
+
+  const handleShowModal = (title, message) => {
+    setShowModal(true)
+    setModalContent({ title: title, message: message })
+  }
+
+  const addCartItemToLocalStorage = () => {
+    let oldItems = JSON.parse(window.localStorage.getItem("cartItems"))
+    oldItems = oldItems == null ? [] : oldItems;
+    let newCartItem = { ...cartItem, _id: (uuidv4().split("-").join("")) }
+    window.localStorage.setItem("cartItems", JSON.stringify([...oldItems, newCartItem]));
+    handleShowModal("Success", "Saved to cart successfully")
+  }
 
   useEffect(() => {
     (async function getProduct() {
@@ -27,32 +50,78 @@ export default function Product(props) {
   const getSingleProductWithId = async () => {
     try {
       const response = await axios.get(apiUrl + "products/all/" + id, {
-        headers: {
-          Authorization: "Bearer " + state.token,
-        },
       });
-      console.log(response.data.data);
+      console.log(response.data.data.product);
       setProductInfo(response.data.data.product);
+      const loadedProductInfo = response.data.data.product;
+      setCartItem({
+        ...cartItem,
+        userId: state.id,
+        productId: loadedProductInfo._id,
+        productName: loadedProductInfo.name,
+        price: loadedProductInfo.price,
+        deliveryCost: loadedProductInfo.deliveryCost,
+        currencyCode: loadedProductInfo.currencyCode,
+        productImageLink: loadedProductInfo.productImageLink,
+      });
     } catch (err) {
       console.log(err);
-      //open modal here
+      handleShowModal("Failed", "Couldn't load resource")
     }
   }
 
   const handleIncreaseQty = () => {
-    setPurchaseInfo({ ...purchaseInfo, quantity: purchaseInfo.quantity += 1 })
+    let newQty = purchaseInfo.quantity + 1;
+    setCartItem({ ...cartItem, itemQuantity: newQty })
+    setPurchaseInfo({ ...purchaseInfo, quantity: newQty })
+
   }
 
   const handleDecreaseQty = () => {
-    if (purchaseInfo.quantity > 1)
-      setPurchaseInfo({ ...purchaseInfo, quantity: purchaseInfo.quantity -= 1 })
+    if (purchaseInfo.quantity > 1) {
+      let newQty = purchaseInfo.quantity - 1;
+      setCartItem({ ...cartItem, itemQuantity: newQty })
+      setPurchaseInfo({ ...purchaseInfo, quantity: newQty })
+    }
   }
+
+  const createNewCartItemLoggedIn = async () => {
+    try {
+      const response = await axios({
+        method: "post",
+        data: cartItem,
+        headers: {
+          Authorization: "Bearer " + state.token,
+        },
+        url: apiUrl + "cart",
+      });
+      if (response.data.status === "Failed") {
+        handleShowModal("Failed", "Unable to save your cart Item",);
+      }
+      console.log(response.data);
+      handleShowModal("Success", "Saved to cart successfully")
+      // history.push("/")
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Failed", "We are having trouble to save your cart Item",);
+    }
+  }
+
 
   return (
     <div className="w-full my-10 p-8 px-28 h-productDetail grid grid-cols-2 items-center">
+      {showModal && (
+        <Modal
+          closeModal={() => {
+            closeModal();
+          }}
+          message={modalContent.message}
+          title={modalContent.title}
+        />
+      )}
       <div className="mx-10 w-productDetail overflow-hidden shadow-around rounded-4xl h-productDetail self-start">
         <img
-          src="https://source.unsplash.com/random/800x800"
+          src={`${productInfo.productImageLink}`}
           className="mx-auto w-full h-full object-cover"
           alt="product"
         />
@@ -96,14 +165,34 @@ export default function Product(props) {
               />
             </div>
           </div>
-          <div className="flex flex-row mt-8">
-            <div className="mr-4">
-              <CustomButton fontSize={"1.2rem"} text="Pay Now" />
-            </div>
-            <div>
-              <CustomButton fontSize={"1.2rem"} text="Add To Cart" />
-            </div>
-          </div>
+          {state.token == null && <div>
+            <p className="font-nunito font-bold py-0">What name do we attach to this order?</p>
+            <input
+              onChange={(e) => {
+                setGuestName(e.target.value)
+              }}
+              required
+              name="name"
+              type="text"
+              className="outline-none w-3/5 bg-transparent border-b-2 border-gray-600 mb-3 rounded-sm font-nunito font-lg h-8 text-decoration-none"
+            />
+          </div>}
+          {!(isLoggedIn && (state.accountType === "merchant" || state.accountType === "dispatch_rider")) &&
+            <div className="flex flex-row mt-8">
+              <div className="mr-4">
+                <CustomButton fontSize={"1.2rem"} text="Pay Now" />
+              </div>
+              <div>
+                <CustomButton fontSize={"1.2rem"} text="Add To Cart" execFunc={() => {
+                  console.log(cartItem)
+                  if (isLoggedIn) {
+                    createNewCartItemLoggedIn()
+                  } else {
+                    addCartItemToLocalStorage(cartItem)
+                  }
+                }} />
+              </div>
+            </div>}
         </div>
       </div>
     </div>

@@ -194,13 +194,6 @@ export default function ProductEditCreate(props) {
                 <div className="flex flex-row mt-4">
                   <div
                     className="mr-4"
-                  // onClick={() => {
-                  //   let formData = new FormData();
-                  //   formData.append("a", "dddddddddddddddddddddddd");
-                  //   for (let pair of formData.entries()) {
-                  //     console.log(pair[0] + ", " + pair[1]);
-                  //   }
-                  // }}
                   >
                     <CustomButton
                       fontSize={"1.2rem"}

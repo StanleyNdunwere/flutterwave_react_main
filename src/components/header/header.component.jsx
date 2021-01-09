@@ -4,6 +4,7 @@ import logo from "../../assets/images/logo.svg";
 import search from "../../assets/images/search.svg";
 import UserContext from "../../context/user.context";
 import CustomButton from "../global_components/button.component";
+import cart from "../../assets/images/cart.svg"
 
 export default function Header(props) {
   const history = useHistory();
@@ -87,28 +88,41 @@ export default function Header(props) {
                       text="Login"
                     />
                   </div>
-                </>
-              ) : (
-                <>
-                  <span
-                    onClick={() => {
-                      goToDashboard();
-                    }}
-                    className="mx-2 font-nunito font-bold text-md text-gray-800 hover:text-yellow-700 my-auto cursor-pointer"
-                  >
-                    Dashboard
-                  </span>
-                  <div className="ml-4">
-                    <CustomButton
-                      fontSize={"null"}
-                      execFunc={() => {
-                        handleLogout(state, dispatch);
-                      }}
-                      text="Log Out"
-                    />
+                  <div onClick={() => {
+                    history.push("/guest")
+                  }} className="h-full overflow-hidden flex flex-row mx-4">
+                    <img className="h-8 w-auto object-contain" src={cart} alt="cart item" />
                   </div>
                 </>
-              )}
+              ) : (
+                  <>
+                    <span
+                      onClick={() => {
+                        goToDashboard();
+                      }}
+                      className="mx-2 font-nunito font-bold text-md text-gray-800 hover:text-yellow-700 my-auto cursor-pointer"
+                    >
+                      Dashboard
+                  </span>
+                    <div
+                      onClick={() => {
+                        history.push("/user")
+                      }}
+                      className="h-full overflow-hidden flex flex-row mx-4">
+                      <img className="h-8 w-auto object-contain" src={cart} alt="cart item" />
+                    </div>
+
+                    <div className="ml-4">
+                      <CustomButton
+                        fontSize={"null"}
+                        execFunc={() => {
+                          handleLogout(state, dispatch);
+                        }}
+                        text="Log Out"
+                      />
+                    </div>
+                  </>
+                )}
             </div>
           </div>
         </header>

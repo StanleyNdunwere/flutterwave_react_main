@@ -5,6 +5,7 @@ import axios from "axios";
 import UserContext from "../../context/user.context";
 import Modal from "../global_components/modal.component";
 import { useHistory } from "react-router-dom";
+import { apiUrl } from "../../configParams";
 
 export default function LoginComponent(props) {
   const history = useHistory();
@@ -26,7 +27,7 @@ export default function LoginComponent(props) {
     try {
       const response = await axios({
         method: "post",
-        url: "http://localhost:3000/users/login",
+        url: apiUrl + "users/login",
         data: loginDetails,
       });
       if (response.data.status !== "success") {

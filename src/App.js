@@ -14,6 +14,7 @@ import RiderDashboard from '../src/components/rider_dashboard/rider_dashboard.co
 import AdminDashBoard from './components/admin_dashboard/admin_dashboard.component';
 import UserDashboard from './components/user_dashboard/user_dashboard.component'
 import { useReducer, useState } from 'react';
+import GuestDashboard from './components/user_dashboard/guest_dashboard.component';
 function App(props) {
   let initialState = {
     token: window.localStorage.getItem("token"),
@@ -78,6 +79,8 @@ function App(props) {
           <Route path="/sign-up" exact component={SignUpComponent} />
           <Route path="/login" exact component={LoginComponent} />
           <Route component={Product} exact path="/product/:id" />
+          <Route component={GuestDashboard} exact path="/guest" />
+
           {/* <Route path="/admin" exact component={AdminDashBoard} /> */}
           <PrivateRoute component={AdminDashBoard} exact path="/admin" userType="/admin" userState={state} />
           <PrivateRoute component={MerchantDashboard} exact path="/merchant" userType="/merchant" userState={state} />

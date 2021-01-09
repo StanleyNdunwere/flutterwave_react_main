@@ -11,15 +11,18 @@ import { apiUrl } from "../../configParams";
 import UserContext from "../../context/user.context";
 import axios from "axios";
 import UserDetails from "./user_detail.component";
+import CartItem from "./cart_item.component";
 
 export default function UserDashboard(props) {
 
   const history = useHistory();
   const [state, dispatch] = useContext(UserContext);
-  const [userDetails, setUserDetails] = useState({});
   const [cartItems, setCartItems] = useState([]);
+  const [userDetails, setUserDetails] = useState({});
+  const [currentPage, setCurrentPage] = useState("cart")
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
+  const [selectedCartItems, setSelectedCartItems] = useState([])
 
   const closeModal = () => {
     setShowModal(false);
@@ -123,48 +126,104 @@ export default function UserDashboard(props) {
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
             <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <UserDetails userDetails={{ username: "test", accountNumber: "test", bankName: "test" }} />
+              <UserDetails userDetails={userDetails} />
             </div>
           </div>
           <div className="max-w-full min-w-0">
             <div className="w-full p-6 rounded-3xl shadow-around">
               <div>
-                <h3 className="text-2xl font-nunito font-bold">
-                  Your Earnings
-              </h3>
-                <div className="w-full h-14 py-4">
-                  <p className="font-nunito font-extrabold text-xl text-yellow-500">
-                    Earned: <span>NGN 100.00</span>
+                <div className="w-full flex flex-row my-3">
+                  <p onClick={() => {
+                    setCurrentPage("cart")
+                  }}
+                    className=" mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                    View Cart
+                  </p>
+                  <p onClick={() => {
+                    setCurrentPage("orders")
+                  }}
+                    className="mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-yellow-50 hover:bg-yellow-600">
+                    View Orders
                   </p>
                 </div>
               </div>
               <br />
-              <div>
-                <h3 className="text-2xl font-nunito font-bold">
-                  Your Deliveries:
-              </h3>
-                <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                  <p>Image</p>
-                  <p>Product Name</p>
-                  <p>Quantity</p>
-                  <p>Currency</p>
-                  <p>Price</p>
-                  <p>Delivery fee</p>
+              {currentPage === "cart" ? (
+                <div>
+                  <div className="flex flex-row justify-between items-center">
+                    <h3 className="text-2xl font-nunito font-bold">
+                      Your Cart Items:
+                </h3>
+                    <div className="flex flex-row items-center">
+                      <p onClick={() => {
+                        // delete (props.item.id)
+                      }}
+                        className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                        Buy All Items
+                   </p>
+                      <p onClick={() => {
+                        // delete (props.item.id)
+                      }}
+                        className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                        Buy Selected Items
+                   </p>
+                    </div>
+
+
+                  </div>
+
+                  <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                    <p>Image</p>
+                    <p>Product Name</p>
+                    <p>Quantity</p>
+                    <p>Currency</p>
+                    <p>Price</p>
+                    <p>Delivery fee</p>
+                    <p>Remove</p>
+                    <p>Select</p>
+                  </div>
+                  <div
+                    style={{ height: "400px" }}
+                    className="w-full py-4 px-4 overflow-x-auto"
+                  >
+                    {cartItems.map((item) => {
+                      return <CartItem
+                        key={item._id}
+                        setSelectedCartItems={setSelectedCartItems}
+                        selectedCartItems={selectedCartItems}
+                        delete={deleteCartItem}
+                        item={item}
+                      />
+                    })}
+                  </div>
                 </div>
-                <div
-                  style={{ height: "400px" }}
-                  className="w-full py-4 px-4 overflow-x-auto"
-                >
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                </div>
-              </div>
+              ) :
+                (
+                  <div>
+                    <h3 className="text-2xl font-nunito font-bold">
+                      Your Orders:
+                    </h3>
+                    <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                      <p>Image</p>
+                      <p>Product Name</p>
+                      <p>Price</p>
+                      <p>Delivery fee</p>
+                    </div>
+                    <div
+                      style={{ height: "400px" }}
+                      className="w-full py-4 px-4 overflow-x-auto"
+                    >
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ export default function MerchantEditProduct(props) {
   return (
     <div style={{zIndex:"-5"}} className="h-full min-w-productCard w-productCard mx-4 shadow-lg overflow-hidden rounded-4xl relative z-index-0">
       <img
-        src={"http://" + props.product.productImageLink}
+        src={props.product.productImageLink}
         alt="productImage"
         className="z-index-0 absolute top-0 left-0 w-full h-full object-cover"
       />
