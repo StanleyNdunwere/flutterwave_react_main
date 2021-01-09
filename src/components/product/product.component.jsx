@@ -16,16 +16,18 @@ export default function Product(props) {
   const [state, dispatch] = useContext(UserContext);
   const [productInfo, setProductInfo] = useState({})
   const [purchaseInfo, setPurchaseInfo] = useState({
-    id: id,
+    productId: id,
     quantity: 1
   })
   const [cartItem, setCartItem] = useState({ itemQuantity: 1 })
   const [guestName, setGuestName] = useState("")
+  const [stayOnPage, setStayOnPage] = useState(false)
   const isLoggedIn = state.token != null;
 
   const closeModal = () => {
     setShowModal(false);
-    history.push("/")
+    if (!stayOnPage)
+      history.push("/")
   };
 
   const handleShowModal = (title, message) => {
@@ -41,11 +43,42 @@ export default function Product(props) {
     handleShowModal("Success", "Saved to cart successfully")
   }
 
+
   useEffect(() => {
     (async function getProduct() {
       getSingleProductWithId();
     })();
   }, [])
+
+
+  const handleSinglePayment = async () => {
+    let connectUrl = state.token != null ? apiUrl + "orders/single" : apiUrl + "orders/guest/single"
+    if (state.token == null && (guestName == null || guestName == "")) {
+      handleShowModal("Cannot Proceed", "Please input a reference name")
+      setStayOnPage(true)
+    } else {
+      const itemOrderInfo = { ...purchaseInfo, name: guestName };
+      try {
+        const response = await axios({
+          method: "post",
+          data: itemOrderInfo,
+          headers: {
+            Authorization: "Bearer " + state.token ?? "",
+          },
+          url: connectUrl,
+        });
+        if (response.data.status === "Failed") {
+          handleShowModal("Failed", "Unable to place your order",);
+        }
+        console.log(response.data);
+        handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
+        setStayOnPage(false)
+      } catch (err) {
+        console.log(err);
+        handleShowModal("Failed", "We are having trouble placing your order",);
+      }
+    }
+  }
 
   const getSingleProductWithId = async () => {
     try {
@@ -103,7 +136,7 @@ export default function Product(props) {
       // history.push("/")
     } catch (err) {
       console.log(err);
-      handleShowModal("Failed", "We are having trouble to save your cart Item",);
+      handleShowModal("Failed", "We are having trouble saving your cart Item",);
     }
   }
 
@@ -180,7 +213,9 @@ export default function Product(props) {
           {!(isLoggedIn && (state.accountType === "merchant" || state.accountType === "dispatch_rider")) &&
             <div className="flex flex-row mt-8">
               <div className="mr-4">
-                <CustomButton fontSize={"1.2rem"} text="Pay Now" />
+                <CustomButton
+                  execFunc={() => handleSinglePayment()}
+                  fontSize={"1.2rem"} text="Pay Now" />
               </div>
               <div>
                 <CustomButton fontSize={"1.2rem"} text="Add To Cart" execFunc={() => {

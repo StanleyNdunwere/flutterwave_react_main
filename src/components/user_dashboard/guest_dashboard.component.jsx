@@ -55,6 +55,56 @@ export default function GuestDashboard(props) {
     setCartItems([...newItems])
   };
 
+
+  const getItemsToOrder = (selectedOnly) => {
+    if (selectedOnly) {
+      if (selectedCartItems.length == 0) {
+        handleShowModal("Cannot Proceed", "Please select a few items to proceed")
+        return []
+      } else {
+        return selectedCartItems.map((item) => {
+          console.log(item, "the items");
+          console.log(item.quantity);
+          return { cartId: item.itemId, productId: item.productId, quantity: item.quantity }
+        })
+      }
+    } else {
+      if (cartItems.length == 0) {
+        handleShowModal("Cannot Proceed", "You don't have items in your cart")
+        return []
+      } else {
+        return cartItems.map((item) => {
+          console.log(item);
+          console.log(item.itemQuantity);
+          return { cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
+        })
+      }
+    }
+  }
+
+  const processMultiplePayments = async (selected) => {
+    const connectUrl = apiUrl + "orders/guest/multiple"
+    const itemsToOrder = getItemsToOrder(selected)
+    try {
+      const response = await axios({
+        method: "post",
+        data: { productIdsAndQuantities: itemsToOrder },
+        headers: {
+          Authorization: "Bearer ",
+        },
+        url: connectUrl,
+      });
+      if (response.data.status === "Failed") {
+        handleShowModal("Failed", "Unable to place your order",);
+      }
+      console.log(response.data);
+      handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Failed", "We are having trouble placing your order",);
+    }
+  }
+
   return (
     <div className="max-w-full w-full my-2 px-8">
       {showModal && (
@@ -105,13 +155,18 @@ export default function GuestDashboard(props) {
 
                   <div className="flex flex-row items-center">
                     <p onClick={() => {
-                      // delete (props.item.id)
+                      if (guestName == null || guestName == "") {
+                        handleShowModal("Cannot Proceed", "Please Input A guest Name")
+                      } else {
+                        processMultiplePayments(false)
+                      }
                     }}
                       className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
                       Buy All Items
                    </p>
                     <p onClick={() => {
-                      // delete (props.item.id)
+                      processMultiplePayments(true)
+
                     }}
                       className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
                       Buy Selected Items
@@ -148,7 +203,7 @@ export default function GuestDashboard(props) {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 
 }
