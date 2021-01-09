@@ -1,10 +1,7 @@
 import './App.css';
-import env from 'dotenv'
-// const env = require('dotenv');
 
 import { Route, Switch, Redirect } from "react-router-dom"
 import { UserProvider } from "./context/user.context"
-import UserContext from './context/user.context'
 import Home from './components/home/home.component';
 import Header from './components/header/header.component';
 import SignUpComponent from './components/login_signup/sign_up.component';
@@ -15,8 +12,8 @@ import ProductEdit from './components/product_edit/edit_create_product.component
 import MerchantDashboard from './components/merchant_dashboard/merchant_dashboard.component';
 import RiderDashboard from '../src/components/rider_dashboard/rider_dashboard.component';
 import AdminDashBoard from './components/admin_dashboard/admin_dashboard.component';
-import { useContext, useEffect, useReducer, useState } from 'react';
-import AdminTransaction from './components/admin_dashboard/admin_transactions.component';
+import UserDashboard from './components/user_dashboard/user_dashboard.component'
+import { useReducer, useState } from 'react';
 function App(props) {
   let initialState = {
     token: window.localStorage.getItem("token"),
@@ -88,6 +85,7 @@ function App(props) {
           <PrivateRoute component={ProductEditCreate} exact path="/merchant/product" userType="/merchant" userState={state} />
           <PrivateRoute component={Product} exact path="/merchant/product/" userType="/merchant" userState={state} />
           <PrivateRoute component={ProductEdit} exact path="/merchant/product/edit/:id" userType="/merchant" userState={state} />
+          <PrivateRoute component={UserDashboard} exact path="/user/" userType="/user" userState={state} />
 
           {/* <Product /> */}
           {/* <ProductEditCreate/> */}
@@ -116,6 +114,9 @@ export function PrivateRoute(props) {
         break;
       case "merchant":
         fallbackPath = "/merchant";
+        break;
+      case "user":
+        fallbackPath = "/user";
         break;
       default:
         fallbackPath = "/";

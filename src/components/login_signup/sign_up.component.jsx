@@ -82,173 +82,174 @@ export default function SignUpComponent(props) {
               </h2>
             </div>
           ) : (
-            <div className="flex flex-col justify-between h-full pb-7 w-4/5 mx-auto">
-              <div>
-                <p className="font-nunito font-bold py-0">
-                  Enter your username:
-                </p>
-                <input
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      username: e.target.value,
-                    });
-                  }}
-                  name="username"
-                  type="text"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
-                />
-              </div>
-              <div>
-                <p className="font-nunito font-bold py-0">
-                  Enter your password:
-                </p>
-                <input
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      password: e.target.value,
-                    });
-                  }}
-                  name="password"
-                  type="password"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
-                />
-              </div>
-              <div>
-                <p className="font-nunito font-bold py-0 my-0">
-                  Enter your Email:
-                </p>
-                <input
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      accountEmail: e.target.value,
-                    });
-                  }}
-                  name="email"
-                  type="email"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito  h-8 text-decoration-none w-full"
-                />
-              </div>
-              <div>
-                <p className="font-nunito font-bold py-0 my-0">
-                  Enter your Account Number:
-                </p>
-                <input
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      accountNumber: e.target.value,
-                    });
-                  }}
-                  name="accountNumber"
-                  type="number"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
-                />
-              </div>
-              <div>
-                <p className="font-nunito font-bold py-0">
-                  Choose Your Country:
-                </p>
-                <select
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      country: e.target.value,
-                    });
-                    fetchAllBanksByCode(e.target.value);
-                  }}
-                  name="country"
-                  id="country"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
-                >
-                  <option value=""> </option>
-                  <option value="NG">Nigeria</option>
-                  <option value="GH">Ghana</option>
-                  <option value="UK">UK</option>
-                  <option value="KE">Kenya</option>
-                </select>
-              </div>
-              {allBanksByCode.length > 0 && (
+              <div className="flex flex-col justify-between h-full pb-7 w-4/5 mx-auto">
                 <div>
                   <p className="font-nunito font-bold py-0">
-                    Choose Your Bank:
-                  </p>
+                    Enter your username:
+                </p>
+                  <input
+                    required
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        username: e.target.value,
+                      });
+                    }}
+                    name="username"
+                    type="text"
+                    className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-nunito font-bold py-0">
+                    Enter your password:
+                </p>
+                  <input
+                    required
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        password: e.target.value,
+                      });
+                    }}
+                    name="password"
+                    type="password"
+                    className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-nunito font-bold py-0 my-0">
+                    Enter your Email:
+                </p>
+                  <input
+                    required
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        accountEmail: e.target.value,
+                      });
+                    }}
+                    name="email"
+                    type="email"
+                    className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito  h-8 text-decoration-none w-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-nunito font-bold py-0 my-0">
+                    Enter your Account Number:
+                </p>
+                  <input
+                    required
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        accountNumber: e.target.value,
+                      });
+                    }}
+                    name="accountNumber"
+                    type="number"
+                    className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-nunito font-bold py-0">
+                    Choose Your Country:
+                </p>
                   <select
                     required
                     onChange={(e) => {
-                      const index = e.nativeEvent.target.selectedIndex;
-                      const selBankName = e.nativeEvent.target[index].text;
                       setSignUpDetails({
                         ...signUpDetails,
-                        bankCode: e.target.value,
-                        bankName: selBankName,
+                        country: e.target.value,
                       });
+                      fetchAllBanksByCode(e.target.value);
                     }}
-                    name="bankCode"
-                    id="bankCode"
+                    name="country"
+                    id="country"
                     className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
                   >
                     <option value=""> </option>
-                    {allBanksByCode.map((bank) => {
-                      return (
-                        <option key={bank.id} value={bank.code}>
-                          {bank.name}
-                        </option>
-                      );
-                    })}
+                    <option value="NG">Nigeria</option>
+                    <option value="GH">Ghana</option>
+                    <option value="UK">UK</option>
+                    <option value="KE">Kenya</option>
                   </select>
                 </div>
-              )}
-              <div>
-                <p className="font-nunito font-bold py-0">
-                  Choose Your Account Type:
+                {allBanksByCode.length > 0 && (
+                  <div>
+                    <p className="font-nunito font-bold py-0">
+                      Choose Your Bank:
+                  </p>
+                    <select
+                      required
+                      onChange={(e) => {
+                        const index = e.nativeEvent.target.selectedIndex;
+                        const selBankName = e.nativeEvent.target[index].text;
+                        setSignUpDetails({
+                          ...signUpDetails,
+                          bankCode: e.target.value,
+                          bankName: selBankName,
+                        });
+                      }}
+                      name="bankCode"
+                      id="bankCode"
+                      className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
+                    >
+                      <option value=""> </option>
+                      {allBanksByCode.map((bank) => {
+                        return (
+                          <option key={bank.id} value={bank.code}>
+                            {bank.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                )}
+                <div>
+                  <p className="font-nunito font-bold py-0">
+                    Choose Your Account Type:
                 </p>
-                <select
-                  required
-                  onChange={(e) => {
-                    setSignUpDetails({
-                      ...signUpDetails,
-                      accountType: e.target.value,
-                    });
-                  }}
-                  name="accountType"
-                  id="accountType"
-                  className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
-                >
-                  <option value=""> </option>
-
-                  <option value="merchant">Merchant</option>
-                  <option value="dispatch_rider">Dispatch Rider</option>
-                </select>
-              </div>
-
-              <div className="text-center pb-12">
-                <CustomButton
-                  execFunc={() => {
-                    if (formIsFilled()) {
-                      setIsLoading(true);
-                      submitSignUpForm(signUpDetails);
-                    } else {
-                      setShowModal(true);
-                      setModalContent({
-                        title: "Form Incomplete",
-                        message: "All fields are required",
+                  <select
+                    required
+                    onChange={(e) => {
+                      setSignUpDetails({
+                        ...signUpDetails,
+                        accountType: e.target.value,
                       });
-                    }
-                  }}
-                  text="Register"
-                  fontSize={"1.4rem"}
-                />
+                    }}
+                    name="accountType"
+                    id="accountType"
+                    className="outline-none bg-transparent border-b-2 border-gray-600 mb-0 rounded-sm font-nunito h-8 text-decoration-none w-full"
+                  >
+                    <option value=""> </option>
+
+                    <option value="user">User</option>
+                    <option value="merchant">Merchant</option>
+                    <option value="dispatch_rider">Dispatch Rider</option>
+                  </select>
+                </div>
+
+                <div className="text-center pb-12">
+                  <CustomButton
+                    execFunc={() => {
+                      if (formIsFilled()) {
+                        setIsLoading(true);
+                        submitSignUpForm(signUpDetails);
+                      } else {
+                        setShowModal(true);
+                        setModalContent({
+                          title: "Form Incomplete",
+                          message: "All fields are required",
+                        });
+                      }
+                    }}
+                    text="Register"
+                    fontSize={"1.4rem"}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </form>
       </div>
     </div>
