@@ -36,14 +36,21 @@ export default function Product(props) {
   }
 
   const addCartItemToLocalStorage = (cartItem) => {
-    let oldItems = JSON.parse(window.localStorage.getItem("cartItems"))
-    oldItems = oldItems == null ? [] : oldItems;
-    let uniqueItems = oldItems.filter((item) => {
-      return (item.productId != cartItem.productId)
-    });
-    let newCartItem = { ...cartItem, _id: (uuidv4().split("-").join("")) }
-    window.localStorage.setItem("cartItems", JSON.stringify([...uniqueItems, newCartItem]));
-    handleShowModal("Success", "Saved to cart successfully")
+    if (state.token == null && (guestName == null || guestName == "")) {
+      handleShowModal("Cannot Proceed", "Please input a reference name")
+      setStayOnPage(true)
+    } else {
+      let oldItems = JSON.parse(window.localStorage.getItem("cartItems"))
+      oldItems = oldItems == null ? [] : oldItems;
+      let uniqueItems = oldItems.filter((item) => {
+        return (item.productId != cartItem.productId)
+      });
+
+      let newCartItem = { ...cartItem, _id: (uuidv4().split("-").join("")), username: guestName }
+      window.localStorage.setItem("cartItems", JSON.stringify([...uniqueItems, newCartItem]));
+      setStayOnPage(false);
+      handleShowModal("Success", "Saved to cart successfully")
+    }
   }
 
 

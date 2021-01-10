@@ -30,13 +30,14 @@ export default function CartItem(props) {
       <p onClick={() => {
         if (selected === false) {
           setSelected(true)
-          const purchaseInfo = { productId: props.item.productId, quantity: props.item.itemQuantity, itemId: props.item._id }
+          let purchaseInfo = { ...props.item }
+          // let purchaseInfo = { productId: props.item.productId, quantity: props.item.itemQuantity, itemId: props.item._id }
           console.log(purchaseInfo, 'vakess retrieved')
           props.setSelectedCartItems([...props.selectedCartItems, purchaseInfo])
         } else {
           setSelected(false)
           const newSelected = props.selectedCartItems.filter((item) => {
-            return item.itemId != props.item._id
+            return item._id != props.item._id
           })
           props.setSelectedCartItems([...newSelected])
         }

@@ -37,7 +37,7 @@ export default function GuestDashboard(props) {
       getCartItems()
     })()
   }, [])
-  
+
   const getCartItems = async () => {
     let items = JSON.parse(window.localStorage.getItem("cartItems"))
     items = items == null ? [] : items;
@@ -59,25 +59,25 @@ export default function GuestDashboard(props) {
 
   const getItemsToOrder = (selectedOnly) => {
     if (selectedOnly) {
-      if (selectedCartItems.length == 0) {
-        handleShowModal("Cannot Proceed", "Please select a few items to proceed")
+      console.log(selectedCartItems.length, "length cart items chosen")
+      if (selectedCartItems.length === 0) {
         return []
       } else {
         return selectedCartItems.map((item) => {
           console.log(item, "the items");
-          console.log(item.quantity);
-          return { cartId: item.itemId, productId: item.productId, quantity: item.quantity }
+          console.log(item.username);
+          // return { username: item.username, cartId: item.itemId, productId: item.productId, quantity: item.quantity }
+          return { username: item.username, cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
         })
       }
     } else {
-      if (cartItems.length == 0) {
-        handleShowModal("Cannot Proceed", "You don't have items in your cart")
+      if (cartItems.length === 0) {
         return []
       } else {
         return cartItems.map((item) => {
           console.log(item);
           console.log(item.itemQuantity);
-          return { cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
+          return { username: item.username, cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
         })
       }
     }
@@ -86,6 +86,10 @@ export default function GuestDashboard(props) {
   const processMultiplePayments = async (selected) => {
     const connectUrl = apiUrl + "orders/guest/multiple"
     const itemsToOrder = getItemsToOrder(selected)
+    if (itemsToOrder.length === 0) {
+      handleShowModal("Cannot Proceed", "You must have cart items or select a few items to place an order")
+      return;
+    }
     try {
       const response = await axios({
         method: "post",
@@ -136,42 +140,23 @@ export default function GuestDashboard(props) {
             <div className="w-full p-6 rounded-3xl shadow-around">
               <br />
               <div>
-                <div className="flex flex-row w-2/5 items-center py-4">
-                  <p className="font-nunito text-xl pb-2 mr-3 font-bold py-0 text-yellow-600">Name:</p>
-                  <input
-                    onChange={(e) => {
-                      setGuestName(e.target.value)
-                    }}
-                    required
-                    name="name"
-                    type="text"
-                    className="outline-none w-full bg-transparent border-b-2 border-gray-600 mb-3 rounded-sm font-nunito font-lg h-8 text-decoration-none"
-                  />
-                </div>
                 <div className="flex flex-row justify-between items-center">
-
                   <h3 className="text-2xl font-nunito font-bold">
                     Your Cart Items:
                   </h3>
-
                   <div className="flex flex-row items-center">
-                    <p onClick={() => {
-                      if (guestName == null || guestName == "") {
-                        handleShowModal("Cannot Proceed", "Please Input A guest Name")
-                      } else {
-                        processMultiplePayments(false)
-                      }
+                    {cartItems.length > 0 && <p onClick={() => {
+                      processMultiplePayments(false)
                     }}
                       className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
                       Buy All Items
-                   </p>
-                    <p onClick={() => {
+                   </p>}
+                    {selectedCartItems.length > 0 && <p onClick={() => {
                       processMultiplePayments(true)
-
                     }}
                       className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
                       Buy Selected Items
-                   </p>
+                   </p>}
                   </div>
                 </div>
 
