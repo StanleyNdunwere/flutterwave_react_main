@@ -35,11 +35,14 @@ export default function Product(props) {
     setModalContent({ title: title, message: message })
   }
 
-  const addCartItemToLocalStorage = () => {
+  const addCartItemToLocalStorage = (cartItem) => {
     let oldItems = JSON.parse(window.localStorage.getItem("cartItems"))
     oldItems = oldItems == null ? [] : oldItems;
+    let uniqueItems = oldItems.filter((item) => {
+      return (item.productId != cartItem.productId)
+    });
     let newCartItem = { ...cartItem, _id: (uuidv4().split("-").join("")) }
-    window.localStorage.setItem("cartItems", JSON.stringify([...oldItems, newCartItem]));
+    window.localStorage.setItem("cartItems", JSON.stringify([...uniqueItems, newCartItem]));
     handleShowModal("Success", "Saved to cart successfully")
   }
 

@@ -37,6 +37,7 @@ export default function GuestDashboard(props) {
       getCartItems()
     })()
   }, [])
+  
   const getCartItems = async () => {
     let items = JSON.parse(window.localStorage.getItem("cartItems"))
     items = items == null ? [] : items;
