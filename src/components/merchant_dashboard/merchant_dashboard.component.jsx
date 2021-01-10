@@ -9,6 +9,7 @@ import UserContext from "../../context/user.context";
 import axios from "axios";
 import { apiUrl } from "../../configParams";
 import Modal from "../global_components/modal.component";
+import PayFee from "../global_components/pay_fee.component";
 
 export default function MerchantDashboard(props) {
   const history = useHistory();
@@ -59,7 +60,7 @@ export default function MerchantDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.user);
+      console.log(response.data.data.user.active, "user details");
       setUserDetails(response.data.data.user);
     } catch (err) {
       console.log(err);
@@ -161,8 +162,8 @@ export default function MerchantDashboard(props) {
       if (response.data.status === "success") {
         getAllRiders();
         handleShowModal("Success", "Added Successfully")
-      }else{
-      handleShowModal("Failed", response.data.data.message)
+      } else {
+        handleShowModal("Failed", response.data.data.message)
 
       }
     } catch (err) {
@@ -183,7 +184,9 @@ export default function MerchantDashboard(props) {
           title={modalContent.title}
         />
       )}
-      <div className="w-full h-full ">
+      {userDetails.active === 0 && <PayFee userDetails={userDetails} token={userToken} />}
+
+      {userDetails.active === 1 && (<div className="w-full h-full ">
         <div className="flex flex-row justify-between items-center mb-3">
           <UserHeader userType="merchant" riders={allRiders} addMerchantToRider={addMerchantToRider} merchantId={merchantId} />
         </div>
@@ -203,7 +206,7 @@ export default function MerchantDashboard(props) {
               <div>
                 <h3 className="text-2xl font-nunito font-bold">
                   Your Earnings
-                </h3>
+                    </h3>
                 <div className="w-full h-14 py-4">
                   <p className="font-nunito font-extrabold text-xl text-yellow-500">
                     Earned: <span>NGN 100.00</span>
@@ -214,7 +217,7 @@ export default function MerchantDashboard(props) {
                 <div className="flex flex-row justify-between items-center mb-6">
                   <h3 className="text-2xl font-nunito font-bold">
                     Your Products
-                  </h3>
+                      </h3>
                   <p
                     onClick={() => {
                       history.push(history.location.pathname + "/product");
@@ -222,14 +225,14 @@ export default function MerchantDashboard(props) {
                     className="py-2 px-6 rounded-xl cursor-pointer text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
                   >
                     Add New Product
-                  </p>
+                      </p>
                 </div>
                 <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll z-index-0">
                   {products.length === 0 ? (
                     <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
                       <h2 className="p-8 rounded-xl bg-yellow-100">
                         No products attached to your account. Add new products
-                      </h2>
+                          </h2>
                     </div>
                   ) : (
                       products.map((product) => {
@@ -265,6 +268,7 @@ export default function MerchantDashboard(props) {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

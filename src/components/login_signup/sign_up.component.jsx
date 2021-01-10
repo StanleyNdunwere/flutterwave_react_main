@@ -4,8 +4,10 @@ import CustomButton from "../global_components/button.component";
 import axios from "axios";
 import Modal from "../global_components/modal.component";
 import { apiUrl } from "../../configParams";
+import { useHistory } from "react-router-dom";
 
 export default function SignUpComponent(props) {
+  const history = useHistory();
   const [signUpDetails, setSignUpDetails] = useState({});
   const [allBanksByCode, setAllBanksByCode] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -20,9 +22,6 @@ export default function SignUpComponent(props) {
   const formIsFilled = () => {
     const values = Object.keys(signUpDetails);
     console.log(values);
-    // for (const [key, value] of Object.entries(productInfo)) {
-    //   formData.append(`${key}`, value);
-    // }
     return !(values.length < 8);
   };
 
@@ -33,7 +32,6 @@ export default function SignUpComponent(props) {
         url: apiUrl + "users/sign-up",
         data: signUpDetails,
       });
-      console.log(response.data);
       setShowModal(true);
       setModalContent({
         title: response.data.status,

@@ -7,6 +7,8 @@ import { apiUrl } from "../../configParams.js";
 export default function Home(props) {
   const [products, setProducts] = useState([]);
 
+  
+
   useEffect(() => {
     axios.get(apiUrl + `products`).then((res) => {
       const products = res.data;

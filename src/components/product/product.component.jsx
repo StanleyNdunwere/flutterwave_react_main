@@ -11,8 +11,6 @@ import { v4 as uuidv4 } from 'uuid'
 export default function Product(props) {
   const { id } = useParams()
   const history = useHistory();
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: "", message: "" });
   const [state, dispatch] = useContext(UserContext);
   const [productInfo, setProductInfo] = useState({})
   const [purchaseInfo, setPurchaseInfo] = useState({
@@ -23,6 +21,8 @@ export default function Product(props) {
   const [guestName, setGuestName] = useState("")
   const [stayOnPage, setStayOnPage] = useState(false)
   const isLoggedIn = state.token != null;
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
   const closeModal = () => {
     setShowModal(false);
@@ -79,10 +79,12 @@ export default function Product(props) {
         });
         if (response.data.status === "Failed") {
           handleShowModal("Failed", "Unable to place your order",);
+        } else {
+          console.log(response.data);
+          setStayOnPage(false)
+          window.location.assign(response.data.link)
+          // handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
         }
-        console.log(response.data);
-        handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
-        setStayOnPage(false)
       } catch (err) {
         console.log(err);
         handleShowModal("Failed", "We are having trouble placing your order",);
