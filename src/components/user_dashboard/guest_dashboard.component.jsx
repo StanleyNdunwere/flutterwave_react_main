@@ -14,14 +14,17 @@ import UserDetails from "./user_detail.component";
 import CartItem from "./cart_item.component";
 
 export default function GuestDashboard(props) {
-
   const history = useHistory();
   const [cartItems, setCartItems] = useState([]);
-  const [userDetails, setUserDetails] = useState({ username: "Guest", accountNumber: "N/A", bankName: "N/A" });
-  const [currentPage, setCurrentPage] = useState("cart")
+  const [userDetails, setUserDetails] = useState({
+    username: "Guest",
+    accountNumber: "N/A",
+    bankName: "N/A",
+  });
+  const [currentPage, setCurrentPage] = useState("cart");
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
-  const [selectedCartItems, setSelectedCartItems] = useState([])
+  const [selectedCartItems, setSelectedCartItems] = useState([]);
   const [guestName, setGuestName] = useState("");
   const closeModal = () => {
     setShowModal(false);
@@ -34,60 +37,95 @@ export default function GuestDashboard(props) {
 
   useEffect(() => {
     (async function loadCartItems() {
-      getCartItems()
-    })()
-  }, [])
+      getCartItems();
+    })();
+  }, []);
 
   const getCartItems = async () => {
-    let items = JSON.parse(window.localStorage.getItem("cartItems"))
+    let items = JSON.parse(window.localStorage.getItem("cartItems"));
     items = items == null ? [] : items;
-    setCartItems([...items])
-
+    items.forEach((item) => {
+      item.username =
+        window.localStorage.getItem("guestName") != null
+          ? window.localStorage.getItem("guestName")
+          : "guest";
+      item.email =
+        window.localStorage.getItem("guestEmail") != null
+          ? window.localStorage.getItem("guestEmail")
+          : "N/A";
+    });
+    console.log(items, "thie eitems");
+    setCartItems([...items]);
   };
-
 
   const deleteCartItem = (itemId) => {
-    let items = JSON.parse(window.localStorage.getItem("cartItems"))
+    let items = JSON.parse(window.localStorage.getItem("cartItems"));
     items = items == null ? [] : items;
     let newItems = items.filter((item) => {
-      return item._id != itemId
-    })
-    window.localStorage.setItem("cartItems", JSON.stringify(newItems))
-    setCartItems([...newItems])
+      return item._id != itemId;
+    });
+    window.localStorage.setItem("cartItems", JSON.stringify(newItems));
+    setCartItems([...newItems]);
   };
 
-
   const getItemsToOrder = (selectedOnly) => {
+    const name = window.localStorage.getItem("guestName")
+      ? window.localStorage.getItem("guestName")
+      : "guest";
+    const email = window.localStorage.getItem("guestEmail")
+      ? window.localStorage.getItem("guestEmail")
+      : "N/A";
     if (selectedOnly) {
-      console.log(selectedCartItems.length, "length cart items chosen")
+      console.log(selectedCartItems.length, "length cart items chosen");
       if (selectedCartItems.length === 0) {
-        return []
+        return [];
       } else {
-        return selectedCartItems.map((item) => {
+        let selectedItems = selectedCartItems.map((item) => {
           console.log(item, "the items");
           console.log(item.username);
-          // return { username: item.username, cartId: item.itemId, productId: item.productId, quantity: item.quantity }
-          return { username: item.username, cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
-        })
+          return {
+            cartId: item._id,
+            productId: item.productId,
+            quantity: item.itemQuantity,
+          };
+        });
+        return {
+          username: name,
+          email: email,
+          items: [...selectedItems],
+        };
       }
     } else {
       if (cartItems.length === 0) {
-        return []
+        return [];
       } else {
-        return cartItems.map((item) => {
+        let cartItemsToOrder = cartItems.map((item) => {
           console.log(item);
           console.log(item.itemQuantity);
-          return { username: item.username, cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
-        })
+          return {
+            cartId: item._id,
+            productId: item.productId,
+            quantity: item.itemQuantity,
+          };
+        });
+        return {
+          username: name,
+          email: email,
+          items: [...cartItemsToOrder],
+        };
       }
     }
-  }
+  };
 
   const processMultiplePayments = async (selected) => {
-    const connectUrl = apiUrl + "orders/guest/multiple"
-    const itemsToOrder = getItemsToOrder(selected)
+    const connectUrl = apiUrl + "orders/guest/multiple";
+    const itemsToOrder = getItemsToOrder(selected);
+    console.log(itemsToOrder, "order items");
     if (itemsToOrder.length === 0) {
-      handleShowModal("Cannot Proceed", "You must have cart items or select a few items to place an order")
+      handleShowModal(
+        "Cannot Proceed",
+        "You must have cart items or select a few items to place an order"
+      );
       return;
     }
     try {
@@ -100,15 +138,18 @@ export default function GuestDashboard(props) {
         url: connectUrl,
       });
       if (response.data.status === "Failed") {
-        handleShowModal("Failed", "Unable to place your order",);
+        handleShowModal("Failed", "Unable to place your order");
       }
       console.log(response.data);
-      handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
+      handleShowModal(
+        "Success",
+        "Order placed successfully and charge completed. Your delivery should begin soonest"
+      );
     } catch (err) {
       console.log(err);
-      handleShowModal("Failed", "We are having trouble placing your order",);
+      handleShowModal("Failed", "We are having trouble placing your order");
     }
-  }
+  };
 
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -145,18 +186,26 @@ export default function GuestDashboard(props) {
                     Your Cart Items:
                   </h3>
                   <div className="flex flex-row items-center">
-                    {cartItems.length > 0 && <p onClick={() => {
-                      processMultiplePayments(false)
-                    }}
-                      className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
-                      Buy All Items
-                   </p>}
-                    {selectedCartItems.length > 0 && <p onClick={() => {
-                      processMultiplePayments(true)
-                    }}
-                      className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
-                      Buy Selected Items
-                   </p>}
+                    {cartItems.length > 0 && (
+                      <p
+                        onClick={() => {
+                          processMultiplePayments(false);
+                        }}
+                        className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                      >
+                        Buy All Items
+                      </p>
+                    )}
+                    {selectedCartItems.length > 0 && (
+                      <p
+                        onClick={() => {
+                          processMultiplePayments(true);
+                        }}
+                        className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                      >
+                        Buy Selected Items
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -167,21 +216,26 @@ export default function GuestDashboard(props) {
                   <p>Currency</p>
                   <p>Price</p>
                   <p>Delivery fee</p>
-                  <p>Remove</p>
-                  <p>Select</p>
+                  <div className="flex flex-row items-center">
+                    <p className="mx-2">Remove</p>
+                    <p className="mx-2">Select</p>
+                    <p className="mx-2">Buy Now</p>
+                  </div>
                 </div>
                 <div
                   style={{ height: "400px" }}
                   className="w-full py-4 px-4 overflow-x-auto"
                 >
                   {cartItems.map((item) => {
-                    return <CartItem
-                      key={item._id}
-                      setSelectedCartItems={setSelectedCartItems}
-                      selectedCartItems={selectedCartItems}
-                      delete={deleteCartItem}
-                      item={item}
-                    />
+                    return (
+                      <CartItem
+                        key={item._id}
+                        setSelectedCartItems={setSelectedCartItems}
+                        selectedCartItems={selectedCartItems}
+                        delete={deleteCartItem}
+                        item={item}
+                      />
+                    );
                   })}
                 </div>
               </div>
@@ -189,7 +243,6 @@ export default function GuestDashboard(props) {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
-
 }

@@ -14,15 +14,14 @@ import UserDetails from "./user_detail.component";
 import CartItem from "./cart_item.component";
 
 export default function UserDashboard(props) {
-
   const history = useHistory();
   const [state, dispatch] = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
   const [userDetails, setUserDetails] = useState({});
-  const [currentPage, setCurrentPage] = useState("cart")
+  const [currentPage, setCurrentPage] = useState("cart");
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
-  const [selectedCartItems, setSelectedCartItems] = useState([])
+  const [selectedCartItems, setSelectedCartItems] = useState([]);
 
   const closeModal = () => {
     setShowModal(false);
@@ -48,38 +47,48 @@ export default function UserDashboard(props) {
     })();
   }, []);
 
-
   const getItemsToOrder = (selectedOnly) => {
     let itemsInfo = [];
     if (selectedOnly) {
       if (selectedCartItems.length == 0) {
-        handleShowModal("Cannot Proceed", "Please select a few items to proceed")
-        return []
+        handleShowModal(
+          "Cannot Proceed",
+          "Please select a few items to proceed"
+        );
+        return [];
       } else {
         return selectedCartItems.map((item) => {
           console.log(item, "the items");
           console.log(item.quantity);
-          return { cartId: item.itemId, productId: item.productId, quantity: item.quantity }
-        })
+          return {
+            cartId: item.itemId,
+            productId: item.productId,
+            quantity: item.quantity,
+          };
+        });
       }
     } else {
       if (cartItems.length == 0) {
-        handleShowModal("Cannot Proceed", "You don't have items in your cart")
-        return []
+        handleShowModal("Cannot Proceed", "You don't have items in your cart");
+        return [];
       } else {
         return cartItems.map((item) => {
           console.log(item);
           console.log(item.itemQuantity);
           // productId: props.item.productId, quantity: props.item.itemQuantity, itemId: props.item._id
-          return { cartId: item._id, productId: item.productId, quantity: item.itemQuantity }
-        })
+          return {
+            cartId: item._id,
+            productId: item.productId,
+            quantity: item.itemQuantity,
+          };
+        });
       }
     }
-  }
+  };
 
   const processMultiplePayments = async (selected) => {
-    const connectUrl = apiUrl + "orders/multiple"
-    const itemsToOrder = getItemsToOrder(selected)
+    const connectUrl = apiUrl + "orders/multiple";
+    const itemsToOrder = getItemsToOrder(selected);
     try {
       const response = await axios({
         method: "post",
@@ -90,15 +99,18 @@ export default function UserDashboard(props) {
         url: connectUrl,
       });
       if (response.data.status === "Failed") {
-        handleShowModal("Failed", "Unable to place your order",);
+        handleShowModal("Failed", "Unable to place your order");
       }
       console.log(response.data);
-      handleShowModal("Success", "Order placed successfully and charge completed. Your delivery should begin soonest")
+      handleShowModal(
+        "Success",
+        "Order placed successfully and charge completed. Your delivery should begin soonest"
+      );
     } catch (err) {
       console.log(err);
-      handleShowModal("Failed", "We are having trouble placing your order",);
+      handleShowModal("Failed", "We are having trouble placing your order");
     }
-  }
+  };
 
   const getUserInfo = async () => {
     try {
@@ -117,14 +129,11 @@ export default function UserDashboard(props) {
 
   const getCartItems = async () => {
     try {
-      const response = await axios.get(
-        apiUrl + "cart/",
-        {
-          headers: {
-            Authorization: "Bearer " + userToken,
-          },
-        }
-      );
+      const response = await axios.get(apiUrl + "cart/", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
       console.log(response.data.data, "this is the response");
       setCartItems(response.data.data.items);
     } catch (err) {
@@ -133,7 +142,6 @@ export default function UserDashboard(props) {
       handleShowModal("Error", "Failed to load Resource");
     }
   };
-
 
   const deleteCartItem = async (itemId) => {
     try {
@@ -185,16 +193,20 @@ export default function UserDashboard(props) {
             <div className="w-full p-6 rounded-3xl shadow-around">
               <div>
                 <div className="w-full flex flex-row my-3">
-                  <p onClick={() => {
-                    setCurrentPage("cart")
-                  }}
-                    className=" mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                  <p
+                    onClick={() => {
+                      setCurrentPage("cart");
+                    }}
+                    className=" mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                  >
                     View Cart
                   </p>
-                  <p onClick={() => {
-                    setCurrentPage("orders")
-                  }}
-                    className="mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-yellow-50 hover:bg-yellow-600">
+                  <p
+                    onClick={() => {
+                      setCurrentPage("orders");
+                    }}
+                    className="mr-4 font-nunito font-extrabold text-md px-4 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-yellow-50 hover:bg-yellow-600"
+                  >
                     View Orders
                   </p>
                 </div>
@@ -205,23 +217,25 @@ export default function UserDashboard(props) {
                   <div className="flex flex-row justify-between items-center">
                     <h3 className="text-2xl font-nunito font-bold">
                       Your Cart Items:
-                </h3>
+                    </h3>
                     <div className="flex flex-row items-center">
-                      <p onClick={() => {
-                        processMultiplePayments(false)
-                      }}
-                        className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                      <p
+                        onClick={() => {
+                          processMultiplePayments(false);
+                        }}
+                        className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                      >
                         Buy All Items
-                   </p>
-                      <p onClick={() => {
-                        processMultiplePayments(true)
-                      }}
-                        className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600">
+                      </p>
+                      <p
+                        onClick={() => {
+                          processMultiplePayments(true);
+                        }}
+                        className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                      >
                         Buy Selected Items
-                   </p>
+                      </p>
                     </div>
-
-
                   </div>
 
                   <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
@@ -231,56 +245,59 @@ export default function UserDashboard(props) {
                     <p>Currency</p>
                     <p>Price</p>
                     <p>Delivery fee</p>
-                    <p>Remove</p>
-                    <p>Select</p>
+                    <div className="flex flex-row items-center">
+                      <p className="mx-2">Remove</p>
+                      <p className="mx-2">Select</p>
+                      <p className="mx-2">Buy Now</p>
+                    </div>
                   </div>
                   <div
                     style={{ height: "400px" }}
                     className="w-full py-4 px-4 overflow-x-auto"
                   >
                     {cartItems.map((item) => {
-                      return <CartItem
-                        key={item._id}
-                        setSelectedCartItems={setSelectedCartItems}
-                        selectedCartItems={selectedCartItems}
-                        delete={deleteCartItem}
-                        item={item}
-                      />
+                      return (
+                        <CartItem
+                          key={item._id}
+                          setSelectedCartItems={setSelectedCartItems}
+                          selectedCartItems={selectedCartItems}
+                          delete={deleteCartItem}
+                          item={item}
+                        />
+                      );
                     })}
                   </div>
                 </div>
-              ) :
-                (
-                  <div>
-                    <h3 className="text-2xl font-nunito font-bold">
-                      Your Orders:
-                    </h3>
-                    <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                      <p>Image</p>
-                      <p>Product Name</p>
-                      <p>Price</p>
-                      <p>Delivery fee</p>
-                    </div>
-                    <div
-                      style={{ height: "400px" }}
-                      className="w-full py-4 px-4 overflow-x-auto"
-                    >
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                    </div>
+              ) : (
+                <div>
+                  <h3 className="text-2xl font-nunito font-bold">
+                    Your Orders:
+                  </h3>
+                  <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                    <p>Image</p>
+                    <p>Product Name</p>
+                    <p>Price</p>
+                    <p>Delivery fee</p>
                   </div>
-                )}
+                  <div
+                    style={{ height: "400px" }}
+                    className="w-full py-4 px-4 overflow-x-auto"
+                  >
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                    <Transaction />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-
 }
