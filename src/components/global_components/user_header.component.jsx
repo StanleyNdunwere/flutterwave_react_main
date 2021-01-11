@@ -9,7 +9,7 @@ export default function UserHeader(props) {
   return (
     <>
       <h3 className="font-nunito text-4xl font-bold py-1">
-        Hello{" " + (state.username == null) ? " Guest" : state.username},
+        Hello{" " + state.username},
       </h3>
       <div className="flex flex-row  items-center">
         {props.userType === "merchant" && (

@@ -36,7 +36,6 @@ export default function CartItem(props) {
             if (selected === false) {
               setSelected(true);
               let purchaseInfo = { ...props.item };
-              // let purchaseInfo = { productId: props.item.productId, quantity: props.item.itemQuantity, itemId: props.item._id }
               console.log(purchaseInfo, "vakess retrieved");
               props.setSelectedCartItems([
                 ...props.selectedCartItems,
@@ -56,7 +55,13 @@ export default function CartItem(props) {
         </p>
         <p
           onClick={() => {
-            //buy single product
+            props.orderSingleItem({
+              name: props.item.username,
+              email: props.item.email,
+              productId: props.item.productId,
+              quantity: props.item.itemQuantity
+            }, props.item._id)
+
           }}
           className="font-nunito mr-2 font-extrabold text-sm px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-yellow-50 hover:bg-green-600"
         >

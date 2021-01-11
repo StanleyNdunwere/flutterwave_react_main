@@ -26,6 +26,7 @@ export default function GuestDashboard(props) {
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
   const [selectedCartItems, setSelectedCartItems] = useState([]);
   const [guestName, setGuestName] = useState("");
+  const [currency, setCurrency] = useState("");
   const closeModal = () => {
     setShowModal(false);
   };
@@ -40,6 +41,19 @@ export default function GuestDashboard(props) {
       getCartItems();
     })();
   }, []);
+
+  const validateAllItemsAreSameCurrency = (items) => {
+    if (items.length <= 1) {
+      return true;
+    }
+    const checkCurrency = items[0].currencyCode;
+    let dissimilarCurrencyCode = items.filter((item) => {
+      return item.currencyCode != checkCurrency;
+    })
+    if (dissimilarCurrencyCode.length > 0) {
+      return false
+    } else { return true }
+  }
 
   const getCartItems = async () => {
     let items = JSON.parse(window.localStorage.getItem("cartItems"));
@@ -128,6 +142,14 @@ export default function GuestDashboard(props) {
       );
       return;
     }
+    let itemsToValidate = selected ? selectedCartItems : cartItems
+    if (!validateAllItemsAreSameCurrency(itemsToValidate)) {
+      handleShowModal(
+        "Cannot Proceed",
+        "Only items of the same CURRENCY type can be ordered as a group. i.e you can only order items in NGN (Naira) as a group. Unselect the offending items and try again"
+      );
+      return;
+    }
     try {
       const response = await axios({
         method: "post",
@@ -138,18 +160,43 @@ export default function GuestDashboard(props) {
         url: connectUrl,
       });
       if (response.data.status === "Failed") {
-        handleShowModal("Failed", "Unable to place your order");
+        handleShowModal("Failed", response.data.message);
+      } else {
+        console.log(response.data);
+        itemsToOrder.items.forEach((item) => {
+          deleteCartItem(item.cartId);
+        })
+        window.location.assign(response.data.link);
       }
-      console.log(response.data);
-      handleShowModal(
-        "Success",
-        "Order placed successfully and charge completed. Your delivery should begin soonest"
-      );
     } catch (err) {
       console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
   };
+
+  const orderSingleItem = async (itemToOrder, cartId) => {
+    let connectUrl = apiUrl + "orders/guest/single";
+    try {
+      const response = await axios({
+        method: "post",
+        data: { ...itemToOrder, cartId: cartId },
+        headers: {
+          Authorization: "Bearer ",
+        },
+        url: connectUrl,
+      });
+      if (response.data.status === "Failed") {
+        handleShowModal("Failed", "Unable to place your order");
+      } else {
+        console.log(response.data);
+        deleteCartItem(cartId)
+        window.location.assign(response.data.link);
+      }
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Failed", "We are having trouble placing your order");
+    }
+  }
 
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -234,6 +281,7 @@ export default function GuestDashboard(props) {
                         selectedCartItems={selectedCartItems}
                         delete={deleteCartItem}
                         item={item}
+                        orderSingleItem={orderSingleItem}
                       />
                     );
                   })}

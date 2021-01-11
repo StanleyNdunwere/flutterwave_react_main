@@ -47,6 +47,21 @@ export default function UserDashboard(props) {
     })();
   }, []);
 
+
+  const validateAllItemsAreSameCurrency = (items) => {
+    if (items.length <= 1) {
+      return true;
+    }
+    console.log(items, "the codes bro")
+    const checkCurrency = items[0].currencyCode;
+    let dissimilarCurrencyCode = items.filter((item) => {
+      return item.currencyCode != checkCurrency;
+    })
+    if (dissimilarCurrencyCode.length > 0) {
+      return false
+    } else { return true }
+  }
+
   const getItemsToOrder = (selectedOnly) => {
     let itemsInfo = [];
     if (selectedOnly) {
@@ -89,23 +104,36 @@ export default function UserDashboard(props) {
   const processMultiplePayments = async (selected) => {
     const connectUrl = apiUrl + "orders/multiple";
     const itemsToOrder = getItemsToOrder(selected);
+    if (itemsToOrder.length === 0) {
+      handleShowModal(
+        "Cannot Proceed",
+        "You must have cart items or select a few items to place an order"
+      );
+      return;
+    }
+    let itemsToValidate = selected ? selectedCartItems : cartItems
+    if (!validateAllItemsAreSameCurrency(itemsToValidate)) {
+      handleShowModal(
+        "Cannot Proceed",
+        "Only items of the same CURRENCY type can be ordered as a group. i.e you can only order items in NGN (Naira) as a group. Unselect the offending items and try again"
+      );
+      return;
+    }
     try {
       const response = await axios({
         method: "post",
-        data: { productIdsAndQuantities: itemsToOrder },
+        data: { productIdsAndQuantities: { items: itemsToOrder } },
         headers: {
-          Authorization: "Bearer " + state.token ?? "",
+          Authorization: "Bearer " + state.token,
         },
         url: connectUrl,
       });
       if (response.data.status === "Failed") {
-        handleShowModal("Failed", "Unable to place your order");
+        handleShowModal("Failed", response.data.message);
+      } else {
+        console.log(response.data);
+        window.location.assign(response.data.link);
       }
-      console.log(response.data);
-      handleShowModal(
-        "Success",
-        "Order placed successfully and charge completed. Your delivery should begin soonest"
-      );
     } catch (err) {
       console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
@@ -163,6 +191,29 @@ export default function UserDashboard(props) {
     }
   };
 
+  const orderSingleItem = async (itemToOrder, cartId) => {
+    let connectUrl = apiUrl + "orders/single";
+    try {
+      const response = await axios({
+        method: "post",
+        data: { ...itemToOrder, cartId: cartId },
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+        url: connectUrl,
+      });
+      if (response.data.status === "Failed") {
+        handleShowModal("Failed", "Unable to place your order");
+      } else {
+        console.log(response.data);
+        window.location.assign(response.data.link);
+      }
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Failed", "We are having trouble placing your order");
+    }
+  }
+
   return (
     <div className="max-w-full w-full my-2 px-8">
       {showModal && (
@@ -219,22 +270,26 @@ export default function UserDashboard(props) {
                       Your Cart Items:
                     </h3>
                     <div className="flex flex-row items-center">
-                      <p
-                        onClick={() => {
-                          processMultiplePayments(false);
-                        }}
-                        className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
-                      >
-                        Buy All Items
-                      </p>
-                      <p
-                        onClick={() => {
-                          processMultiplePayments(true);
-                        }}
-                        className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
-                      >
-                        Buy Selected Items
-                      </p>
+                      {cartItems.length > 0 && (
+                        <p
+                          onClick={() => {
+                            processMultiplePayments(false);
+                          }}
+                          className="font-nunito mr-4 font-bold px-2 py-2 bg-green-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                        >
+                          Buy All Items
+                        </p>
+                      )}
+                      {selectedCartItems.length > 0 && (
+                        <p
+                          onClick={() => {
+                            processMultiplePayments(true);
+                          }}
+                          className="font-nunito mr-4  font-bold px-2 py-2 bg-yellow-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
+                        >
+                          Buy Selected Items
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -263,37 +318,38 @@ export default function UserDashboard(props) {
                           selectedCartItems={selectedCartItems}
                           delete={deleteCartItem}
                           item={item}
+                          orderSingleItem={orderSingleItem}
                         />
                       );
                     })}
                   </div>
                 </div>
               ) : (
-                <div>
-                  <h3 className="text-2xl font-nunito font-bold">
-                    Your Orders:
+                  <div>
+                    <h3 className="text-2xl font-nunito font-bold">
+                      Your Orders:
                   </h3>
-                  <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                    <p>Image</p>
-                    <p>Product Name</p>
-                    <p>Price</p>
-                    <p>Delivery fee</p>
+                    <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                      <p>Image</p>
+                      <p>Product Name</p>
+                      <p>Price</p>
+                      <p>Delivery fee</p>
+                    </div>
+                    <div
+                      style={{ height: "400px" }}
+                      className="w-full py-4 px-4 overflow-x-auto"
+                    >
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                      <Transaction />
+                    </div>
                   </div>
-                  <div
-                    style={{ height: "400px" }}
-                    className="w-full py-4 px-4 overflow-x-auto"
-                  >
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                    <Transaction />
-                  </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         </div>
