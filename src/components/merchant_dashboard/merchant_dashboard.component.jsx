@@ -230,16 +230,6 @@ export default function MerchantDashboard(props) {
             </div>
             <div className="max-w-full min-w-0">
               <div className="w-full p-6 rounded-3xl shadow-around">
-                <div>
-                  <h3 className="text-2xl font-nunito font-bold">
-                    Your Earnings
-                  </h3>
-                  <div className="w-full h-14 py-4">
-                    <p className="font-nunito font-extrabold text-xl text-yellow-500">
-                      Earned: <span>NGN 100.00</span>
-                    </p>
-                  </div>
-                </div>
                 <div className="w-full">
                   <div className="flex flex-row justify-between items-center mb-6">
                     <h3 className="text-2xl font-nunito font-bold">

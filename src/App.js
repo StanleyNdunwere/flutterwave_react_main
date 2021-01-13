@@ -15,6 +15,7 @@ import AdminDashBoard from './components/admin_dashboard/admin_dashboard.compone
 import UserDashboard from './components/user_dashboard/user_dashboard.component'
 import { useReducer, useState } from 'react';
 import GuestDashboard from './components/user_dashboard/guest_dashboard.component';
+import Page404 from './components/page_404/page_404.component';
 function App(props) {
   let initialState = {
     token: window.localStorage.getItem("token"),
@@ -89,6 +90,7 @@ function App(props) {
           <PrivateRoute component={Product} exact path="/merchant/product/" userType="/merchant" userState={state} />
           <PrivateRoute component={ProductEdit} exact path="/merchant/product/edit/:id" userType="/merchant" userState={state} />
           <PrivateRoute component={UserDashboard} exact path="/user/" userType="/user" userState={state} />
+          <Route component={Page404} />
 
           {/* <Product /> */}
           {/* <ProductEditCreate/> */}

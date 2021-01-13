@@ -12,6 +12,7 @@ import UserContext from "../../context/user.context";
 import axios from "axios";
 import UserDetails from "./user_detail.component";
 import CartItem from "./cart_item.component";
+import empty from "../../assets/images/empty.jpg";
 
 export default function GuestDashboard(props) {
   const history = useHistory();
@@ -49,11 +50,13 @@ export default function GuestDashboard(props) {
     const checkCurrency = items[0].currencyCode;
     let dissimilarCurrencyCode = items.filter((item) => {
       return item.currencyCode != checkCurrency;
-    })
+    });
     if (dissimilarCurrencyCode.length > 0) {
-      return false
-    } else { return true }
-  }
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const getCartItems = async () => {
     let items = JSON.parse(window.localStorage.getItem("cartItems"));
@@ -142,7 +145,7 @@ export default function GuestDashboard(props) {
       );
       return;
     }
-    let itemsToValidate = selected ? selectedCartItems : cartItems
+    let itemsToValidate = selected ? selectedCartItems : cartItems;
     if (!validateAllItemsAreSameCurrency(itemsToValidate)) {
       handleShowModal(
         "Cannot Proceed",
@@ -165,7 +168,7 @@ export default function GuestDashboard(props) {
         console.log(response.data);
         itemsToOrder.items.forEach((item) => {
           deleteCartItem(item.cartId);
-        })
+        });
         window.location.assign(response.data.link);
       }
     } catch (err) {
@@ -189,14 +192,14 @@ export default function GuestDashboard(props) {
         handleShowModal("Failed", "Unable to place your order");
       } else {
         console.log(response.data);
-        deleteCartItem(cartId)
+        deleteCartItem(cartId);
         window.location.assign(response.data.link);
       }
     } catch (err) {
       console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
-  }
+  };
 
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -256,36 +259,50 @@ export default function GuestDashboard(props) {
                   </div>
                 </div>
 
-                <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                  <p>Image</p>
-                  <p>Product Name</p>
-                  <p>Quantity</p>
-                  <p>Currency</p>
-                  <p>Price</p>
-                  <p>Delivery fee</p>
-                  <div className="flex flex-row items-center">
-                    <p className="mx-2">Remove</p>
-                    <p className="mx-2">Select</p>
-                    <p className="mx-2">Buy Now</p>
-                  </div>
-                </div>
-                <div
-                  style={{ height: "400px" }}
-                  className="w-full py-4 px-4 overflow-x-auto"
-                >
-                  {cartItems.map((item) => {
-                    return (
-                      <CartItem
-                        key={item._id}
-                        setSelectedCartItems={setSelectedCartItems}
-                        selectedCartItems={selectedCartItems}
-                        delete={deleteCartItem}
-                        item={item}
-                        orderSingleItem={orderSingleItem}
-                      />
-                    );
-                  })}
-                </div>
+                {cartItems.length <= 0 && (
+                  <>
+                    <div className="flex flex-row items-center justify-center">
+                      <img src={empty} alt="404" className="w-productDetail" />
+                    </div>
+                    <h3 className="font-nunito font-bold text-xl pt-3 text-center">
+                      No Items In Cart
+                    </h3>
+                  </>
+                )}
+                {cartItems.length > 0 && (
+                  <>
+                    <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                      <p>Image</p>
+                      <p>Product Name</p>
+                      <p>Quantity</p>
+                      <p>Currency</p>
+                      <p>Price</p>
+                      <p>Delivery fee</p>
+                      <div className="flex flex-row items-center">
+                        <p className="mx-2">Remove</p>
+                        <p className="mx-2">Select</p>
+                        <p className="mx-2">Buy Now</p>
+                      </div>
+                    </div>
+                    <div
+                      style={{ height: "400px" }}
+                      className="w-full py-4 px-4 overflow-x-auto"
+                    >
+                      {cartItems.map((item) => {
+                        return (
+                          <CartItem
+                            key={item._id}
+                            setSelectedCartItems={setSelectedCartItems}
+                            selectedCartItems={selectedCartItems}
+                            delete={deleteCartItem}
+                            item={item}
+                            orderSingleItem={orderSingleItem}
+                          />
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -12,6 +12,7 @@ import UserContext from "../../context/user.context";
 import axios from "axios";
 import UserDetails from "./user_detail.component";
 import CartItem from "./cart_item.component";
+import empty from "../../assets/images/empty.jpg";
 
 export default function UserDashboard(props) {
   const history = useHistory();
@@ -317,69 +318,96 @@ export default function UserDashboard(props) {
                       )}
                     </div>
                   </div>
-
-                  <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                    <p>Image</p>
-                    <p>Product Name</p>
-                    <p>Quantity</p>
-                    <p>Currency</p>
-                    <p>Price</p>
-                    <p>Delivery fee</p>
-                    <div className="flex flex-row items-center">
-                      <p className="mx-2">Remove</p>
-                      <p className="mx-2">Select</p>
-                      <p className="mx-2">Buy Now</p>
-                    </div>
-                  </div>
-                  <div
-                    style={{ height: "400px" }}
-                    className="w-full py-4 px-4 overflow-x-auto"
-                  >
-                    {cartItems.map((item) => {
-                      return (
-                        <CartItem
-                          key={item._id}
-                          setSelectedCartItems={setSelectedCartItems}
-                          selectedCartItems={selectedCartItems}
-                          delete={deleteCartItem}
-                          item={item}
-                          orderSingleItem={orderSingleItem}
+                  {cartItems.length <= 0 && (
+                    <>
+                      <div className="flex flex-row items-center justify-center">
+                        <img
+                          src={empty}
+                          alt="404"
+                          className="w-productDetail"
                         />
-                      );
-                    })}
-                  </div>
+                      </div>
+                      <h3 className="font-nunito font-bold text-xl pt-3 text-center">
+                        No Items In Cart
+                      </h3>
+                    </>
+                  )}
+
+                  {cartItems.length > 0 && (
+                    <>
+                      <div className="h-10 py-1 px-8 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                        <p>Image</p>
+                        <p>Product Name</p>
+                        <p>Quantity</p>
+                        <p>Currency</p>
+                        <p>Price</p>
+                        <p>Delivery fee</p>
+                        <div className="flex flex-row items-center">
+                          <p className="mx-2">Remove</p>
+                          <p className="mx-2">Select</p>
+                          <p className="mx-2">Buy Now</p>
+                        </div>
+                      </div>
+                      <div
+                        style={{ height: "400px" }}
+                        className="w-full py-4 px-4 overflow-x-auto"
+                      >
+                        {cartItems.map((item) => {
+                          return (
+                            <CartItem
+                              key={item._id}
+                              setSelectedCartItems={setSelectedCartItems}
+                              selectedCartItems={selectedCartItems}
+                              delete={deleteCartItem}
+                              item={item}
+                              orderSingleItem={orderSingleItem}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div>
                   <h3 className="text-2xl font-nunito font-bold">
                     Your Orders:
                   </h3>
-                  <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                    <p>Image</p>
-                    <p>Product Name</p>
-                    <p>Currency</p>
-                    <p>Total Price</p>
-                    <p>Quantity</p>
-                    <p>Delivery Fee</p>
-                  </div>
-                  <div
-                    style={{ height: "400px" }}
-                    className="w-full py-4 px-4 overflow-x-auto"
-                  >
-                    {orders.map((order) => {
-                      return (
-                        <Transaction
-                          key={order._id}
-                          cut={order.totalDeliveryPricePaid}
-                          price={order.totalProductPricePaid}
-                          name={order.productName}
-                          imageLink={order.productImageLink}
-                          currency={order.currencyCode}
-                          quantity={order.quantity}
-                        />
-                      );
-                    })}
-                  </div>
+                  {orders.length <= 0 && (
+                    <div className="flex flex-row items-center justify-center">
+                      <img src={empty} alt="404" className="w-productDetail" />
+                    </div>
+                  )}
+                  {orders.length > 0 && (
+                    <>
+                      <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                        <p>Image</p>
+                        <p>Product Name</p>
+                        <p>Currency</p>
+                        <p>Total Price</p>
+                        <p>Quantity</p>
+                        <p>Delivery Fee</p>
+                      </div>
+                      <div
+                        style={{ height: "400px" }}
+                        className="w-full py-4 px-4 overflow-x-auto"
+                      >
+                        {orders.map((order) => {
+                          return (
+                            <Transaction
+                              key={order._id}
+                              cut={order.totalDeliveryPricePaid}
+                              price={order.totalProductPricePaid}
+                              name={order.productName}
+                              imageLink={order.productImageLink}
+                              currency={order.currencyCode}
+                              quantity={order.quantity}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
             </div>

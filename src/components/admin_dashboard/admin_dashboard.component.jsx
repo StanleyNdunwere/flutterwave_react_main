@@ -20,6 +20,7 @@ export default function AdminDashBoard(props) {
   const [riders, setRiders] = useState([]);
   const [merchants, setMerchants] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [totalCommissions, setTotalCommissions] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
@@ -58,6 +59,27 @@ export default function AdminDashBoard(props) {
       await getAllOrders();
     })();
   }, []);
+
+  useEffect(() => {
+    (async function getCommissions() {
+      await getAllEarningsJumga();
+    })();
+  }, []);
+
+  const getAllEarningsJumga = async () => {
+    try {
+      const response = await axios.get(apiUrl + "orders/commissions", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(response.data.data);
+      setTotalCommissions(response.data.data.totalCommissionsEarned);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
 
   const getUserDetails = async () => {
     try {
@@ -180,32 +202,20 @@ export default function AdminDashBoard(props) {
           </div>
           <div className="max-w-full min-w-0">
             <div className="w-full p-6 rounded-3xl shadow-around">
-              <div className="flex flex-row justify-between items-center w-full mb-4">
-                <h3 className="text-2xl font-nunito font-bold">
-                  Jumga Total Commission Earned:
-                </h3>
-                <div className="h-14 py-4">
-                  <p className="font-nunito font-extrabold text-xl text-yellow-500">
-                    Earned: <span>NGN 100.00</span>
-                  </p>
-                </div>
-              </div>
-              <MerchantRiderDetail />
               <br />
               <div>
                 <h3 className="text-2xl font-nunito font-bold">
                   All transactions:
                 </h3>
-                <div className="h-10 py-1 px-10 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                <div className="h-10 py-1 px-5 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
                   <p>Image</p>
                   <p>Product Name</p>
                   <p>Merchant</p>
                   <p>Rider</p>
-                  <p>Price</p>
+                  <p>Currency</p>
                   <p>Merchant fee</p>
                   <p>Rider fee</p>
-                  <p>Jumga fee(M)</p>
-                  <p>Jumga fee(D)</p>
+                  <p>Jumga</p>
                 </div>
                 <div className="w-full h-96 py-4 px-4 overflow-x-auto">
                   {orders.map((order) => {
