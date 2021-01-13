@@ -27,7 +27,7 @@ export default function ProductEditCreate(props) {
   };
 
   useEffect(() => {
-    (async function fetchProduct() { })();
+    (async function fetchProduct() {})();
   }, []);
 
   const createNewProduct = async () => {
@@ -49,11 +49,12 @@ export default function ProductEditCreate(props) {
         setShowModal(true);
         setModalContent({
           title: "Failed",
-          message: "Unable to save your product",
+          message: response.data.message,
         });
+      } else {
+        console.log(response.data);
+        history.goBack();
       }
-      console.log(response.data);
-      return response.data.data;
     } catch (err) {
       console.log(err);
       return null;
@@ -77,7 +78,10 @@ export default function ProductEditCreate(props) {
         </h3>
         <form>
           <div className="w-full my-10 p-8 px-28 h-productDetail grid grid-cols-2 items-center">
-            <div className="mx-10 w-productDetail overflow-hidden shadow-around rounded-4xl h-productDetail self-start z-index-0">
+            <div
+              style={{ zIndex: "-10" }}
+              className="mx-10 w-productDetail overflow-hidden shadow-around rounded-4xl h-productDetail self-start z-index-0"
+            >
               <div className=" mx-auto w-full h-full flex justify-center items-center relative">
                 <img
                   src={image.productImageLink}
@@ -192,16 +196,13 @@ export default function ProductEditCreate(props) {
                   />
                 </div>
                 <div className="flex flex-row mt-4">
-                  <div
-                    className="mr-4"
-                  >
+                  <div className="mr-4">
                     <CustomButton
                       fontSize={"1.2rem"}
                       text="Save Changes"
                       execFunc={() => {
                         console.log(productInfo);
                         createNewProduct();
-                        history.goBack()
                       }}
                     />
                   </div>

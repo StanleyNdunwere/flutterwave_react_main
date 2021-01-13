@@ -18,6 +18,7 @@ export default function MerchantDashboard(props) {
   const [allRiders, setAllRiders] = useState([]);
   const [rider, setRider] = useState({});
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
@@ -26,14 +27,12 @@ export default function MerchantDashboard(props) {
   };
 
   const handleShowModal = (title, message) => {
-    setShowModal(true)
-    setModalContent({ title: title, message: message })
-  }
+    setShowModal(true);
+    setModalContent({ title: title, message: message });
+  };
 
   const userToken = state.token;
   const merchantId = state.id;
-
-
 
   useEffect(() => {
     (async function getUserDet() {
@@ -53,6 +52,12 @@ export default function MerchantDashboard(props) {
     })();
   }, []);
 
+  useEffect(() => {
+    (async function getUserDet() {
+      await getAllOrders();
+    })();
+  }, []);
+
   const getUserDetails = async () => {
     try {
       const response = await axios.get(apiUrl + "users/" + merchantId, {
@@ -65,7 +70,7 @@ export default function MerchantDashboard(props) {
     } catch (err) {
       console.log(err);
       //open modal here
-      handleShowModal("Error", "Failed to load Resource")
+      handleShowModal("Error", "Failed to load Resource");
     }
   };
 
@@ -81,7 +86,7 @@ export default function MerchantDashboard(props) {
     } catch (err) {
       console.log(err);
       //open modal here
-      handleShowModal("Error", "Failed to load Resource")
+      handleShowModal("Error", "Failed to load Resource");
     }
   };
 
@@ -100,7 +105,7 @@ export default function MerchantDashboard(props) {
     } catch (err) {
       console.log(err);
       //open modal here
-      handleShowModal("Error", "Failed to load Resource")
+      handleShowModal("Error", "Failed to load Resource");
     }
   };
 
@@ -113,66 +118,80 @@ export default function MerchantDashboard(props) {
       });
       console.log(response.data.data);
       setProducts(response.data.data.products);
-
     } catch (err) {
       console.log(err);
-      handleShowModal("Error", "Failed to load Resource")
+      handleShowModal("Error", "Failed to load Resource");
     }
   };
 
   const deleteProduct = async (merchantId, productId) => {
     try {
       const response = await axios({
-        method: 'delete',
+        method: "delete",
         headers: {
-          Authorization: 'Bearer ' + userToken,
+          Authorization: "Bearer " + userToken,
         },
         url: apiUrl + "products/" + productId,
         data: {
           merchantId: merchantId,
-          dispatcherId: productId
+          dispatcherId: productId,
         },
       });
-      console.log(response.data.data)
+      console.log(response.data.data);
       if (response.data.status === "success") {
-        getAllProducts();
-        handleShowModal("Success", "Deleted Successfully")
-
+        await getAllProducts();
+        handleShowModal("Success", "Deleted Successfully");
       }
     } catch (err) {
-      console.log(err)
-      handleShowModal("Error", "Failed to load Resource")
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
     }
-  }
+  };
 
   const addMerchantToRider = async (merchantId, dispatcherId) => {
     try {
       const response = await axios({
-        method: 'patch',
+        method: "patch",
         headers: {
-          Authorization: 'Bearer ' + userToken,
+          Authorization: "Bearer " + userToken,
         },
         url: apiUrl + "merchant-dispatcher",
         data: {
           merchantId: merchantId,
-          dispatcherId: dispatcherId
+          dispatcherId: dispatcherId,
         },
       });
-      console.log(response.data.data)
+      console.log(response.data.data);
       if (response.data.status === "success") {
-        getAllRiders();
-        handleShowModal("Success", "Added Successfully")
+        await getMerchantRider();
+        console.log(response.data);
+        handleShowModal("Success", "Added Successfully");
       } else {
-        handleShowModal("Failed", response.data.data.message)
-
+        handleShowModal("Failed", response.data.data.message);
       }
     } catch (err) {
-      console.log(err)
-      handleShowModal("Error", "Failed to load Resource")
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
     }
-  }
+  };
+  const getAllOrders = async () => {
+    try {
+      const response = await axios.get(apiUrl + "orders/", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(
+        response.data.data.orders,
+        "the orderssssssssssssssssssssssssssss"
+      );
+      setOrders(response.data.data.orders);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
 
-  const getAllTransaction = () => { };
   return (
     <div className="max-w-full w-full my-2 px-8">
       {showModal && (
@@ -184,57 +203,65 @@ export default function MerchantDashboard(props) {
           title={modalContent.title}
         />
       )}
-      {userDetails.active === 0 && <PayFee userDetails={userDetails} token={userToken} />}
+      {userDetails.active === 0 && (
+        <PayFee userDetails={userDetails} token={userToken} />
+      )}
 
-      {userDetails.active === 1 && (<div className="w-full h-full ">
-        <div className="flex flex-row justify-between items-center mb-3">
-          <UserHeader userType="merchant" riders={allRiders} addMerchantToRider={addMerchantToRider} merchantId={merchantId} />
-        </div>
-        <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
-          <div className="">
-            <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <MerchantDetail
-                merchantDetails={userDetails}
-                userType="merchant"
-              />
-              <br></br>
-              <RiderDetail userType="dispatch" riderDetails={rider} />
-            </div>
+      {userDetails.active === 1 && (
+        <div className="w-full h-full ">
+          <div className="flex flex-row justify-between items-center mb-3">
+            <UserHeader
+              userType="merchant"
+              riders={allRiders}
+              addMerchantToRider={addMerchantToRider}
+              merchantId={merchantId}
+            />
           </div>
-          <div className="max-w-full min-w-0">
-            <div className="w-full p-6 rounded-3xl shadow-around">
-              <div>
-                <h3 className="text-2xl font-nunito font-bold">
-                  Your Earnings
-                    </h3>
-                <div className="w-full h-14 py-4">
-                  <p className="font-nunito font-extrabold text-xl text-yellow-500">
-                    Earned: <span>NGN 100.00</span>
-                  </p>
-                </div>
+          <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
+            <div className="">
+              <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
+                <MerchantDetail
+                  merchantDetails={userDetails}
+                  userType="merchant"
+                />
+                <br></br>
+                <RiderDetail userType="dispatch" riderDetails={rider} />
               </div>
-              <div className="w-full">
-                <div className="flex flex-row justify-between items-center mb-6">
+            </div>
+            <div className="max-w-full min-w-0">
+              <div className="w-full p-6 rounded-3xl shadow-around">
+                <div>
                   <h3 className="text-2xl font-nunito font-bold">
-                    Your Products
-                      </h3>
-                  <p
-                    onClick={() => {
-                      history.push(history.location.pathname + "/product");
-                    }}
-                    className="py-2 px-6 rounded-xl cursor-pointer text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
-                  >
-                    Add New Product
-                      </p>
+                    Your Earnings
+                  </h3>
+                  <div className="w-full h-14 py-4">
+                    <p className="font-nunito font-extrabold text-xl text-yellow-500">
+                      Earned: <span>NGN 100.00</span>
+                    </p>
+                  </div>
                 </div>
-                <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll z-index-0">
-                  {products.length === 0 ? (
-                    <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
-                      <h2 className="p-8 rounded-xl bg-yellow-100">
-                        No products attached to your account. Add new products
-                          </h2>
-                    </div>
-                  ) : (
+                <div className="w-full">
+                  <div className="flex flex-row justify-between items-center mb-6">
+                    <h3 className="text-2xl font-nunito font-bold">
+                      Your Products
+                    </h3>
+                    <p
+                      onClick={() => {
+                        history.push(history.location.pathname + "/product");
+                      }}
+                      className="py-2 px-6 rounded-xl cursor-pointer text-md font-nunito text-yellow-50 bg-yellow-500 font-bold shadow-md"
+                    >
+                      Add New Product
+                    </p>
+                  </div>
+                  <div className="w-full h-80 py-4-400 flex flex-row py-3 overflow-x-scroll z-index-0">
+                    {products.length === 0 ? (
+                      <div className="w-3/5 h-full font-nunito m-auto font-bold text-lg  text-center flex flex-row justify-center items-center">
+                        <h2 className="p-8 rounded-xl bg-yellow-100">
+                          No products attached to your account. Add new products
+                        </h2>
+                      </div>
+                    ) : (
                       products.map((product) => {
                         return (
                           <MerchantEditProduct
@@ -246,28 +273,41 @@ export default function MerchantDashboard(props) {
                         );
                       })
                     )}
+                  </div>
                 </div>
-              </div>
-              <br />
-              <div>
-                <h3 className="text-2xl font-nunito font-bold">Your Orders</h3>
-                <div className="w-full h-80 py-4 px-4 overflow-x-auto">
+                <br />
+                <div>
+                  <h3 className="text-2xl font-nunito font-bold">
+                    Your Orders
+                  </h3>
                   <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
                     <p>Image</p>
                     <p>Product Name</p>
-                    <p>Price</p>
+                    <p>Currency</p>
+                    <p>Total Paid</p>
+                    <p>Quantity</p>
                     <p>Revenue</p>
                   </div>
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
+                  <div className="w-full h-80 py-4 px-4 overflow-x-auto">
+                    {orders.map((order) => {
+                      return (
+                        <Transaction
+                          key={order._id}
+                          cut={order.merchantCut}
+                          price={order.totalProductPricePaid}
+                          name={order.productName}
+                          imageLink={order.productImageLink}
+                          currency={order.currencyCode}
+                          quantity={order.quantity}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );

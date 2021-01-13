@@ -19,6 +19,7 @@ export default function AdminDashBoard(props) {
   const [userDetails, setUserDetails] = useState({});
   const [riders, setRiders] = useState([]);
   const [merchants, setMerchants] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
@@ -49,6 +50,12 @@ export default function AdminDashBoard(props) {
   useEffect(() => {
     (async function getMerchants() {
       getAllMerchants();
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async function getUserDet() {
+      await getAllOrders();
     })();
   }, []);
 
@@ -118,7 +125,23 @@ export default function AdminDashBoard(props) {
     }
   };
 
-  const getAllTransaction = () => {};
+  const getAllOrders = async () => {
+    try {
+      const response = await axios.get(apiUrl + "orders/", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(
+        response.data.data.orders,
+        "the orderssssssssssssssssssssssssssss"
+      );
+      setOrders(response.data.data.orders);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
 
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -181,15 +204,26 @@ export default function AdminDashBoard(props) {
                   <p>Price</p>
                   <p>Merchant fee</p>
                   <p>Rider fee</p>
-                  <p>Jumga fee</p>
+                  <p>Jumga fee(M)</p>
+                  <p>Jumga fee(D)</p>
                 </div>
                 <div className="w-full h-96 py-4 px-4 overflow-x-auto">
-                  <AdminTransaction />
-                  <AdminTransaction />
-                  <AdminTransaction />
-                  <AdminTransaction />
-                  <AdminTransaction />
-                  <AdminTransaction />
+                  {orders.map((order) => {
+                    return (
+                      <AdminTransaction
+                        key={order._id}
+                        imageLink={order.productImageLink}
+                        name={order.productName}
+                        merchantName={order.merchantName}
+                        dispatchName={order.dispatchName}
+                        currency={order.currencyCode}
+                        merchantCut={order.merchantCut}
+                        dispatchCut={order.dispatchCut}
+                        jumgaProductCut={order.jumgaProductCut}
+                        jumgaDeliveryCut={order.jumgaDeliveryCut}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             </div>

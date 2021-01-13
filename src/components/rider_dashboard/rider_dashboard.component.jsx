@@ -16,6 +16,7 @@ export default function RiderDashboard(props) {
   const [state, dispatch] = useContext(UserContext);
   const [userDetails, setUserDetails] = useState({});
   const [merchants, setMerchants] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
 
@@ -40,6 +41,12 @@ export default function RiderDashboard(props) {
   useEffect(() => {
     (async function getAllMerchants() {
       await getMerchants();
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async function getUserDet() {
+      await getAllOrders();
     })();
   }, []);
 
@@ -77,7 +84,23 @@ export default function RiderDashboard(props) {
     }
   };
 
-  const getAllTransaction = () => {};
+  const getAllOrders = async () => {
+    try {
+      const response = await axios.get(apiUrl + "orders/", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(
+        response.data.data.orders,
+        "the orderssssssssssssssssssssssssssss"
+      );
+      setOrders(response.data.data.orders);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
   // return <div>This is inside here</div>;
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -130,21 +153,28 @@ export default function RiderDashboard(props) {
                 <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
                   <p>Image</p>
                   <p>Product Name</p>
+                  <p>Currency</p>
                   <p>Price</p>
-                  <p>Delivery fee</p>
+                  <p>Quantity</p>
+                  <p>Revenue</p>
                 </div>
                 <div
                   style={{ height: "400px" }}
                   className="w-full py-4 px-4 overflow-x-auto"
                 >
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
-                  <Transaction />
+                  {orders.map((order) => {
+                    return (
+                      <Transaction
+                        key={order._id}
+                        cut={order.dispatchCut}
+                        price={order.totalProductPricePaid}
+                        name={order.productName}
+                        imageLink={order.productImageLink}
+                        currency={order.currencyCode}
+                        quantity={order.quantity}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             </div>

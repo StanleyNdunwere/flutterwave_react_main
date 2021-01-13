@@ -18,10 +18,12 @@ export default function UserDashboard(props) {
   const [state, dispatch] = useContext(UserContext);
   const [cartItems, setCartItems] = useState([]);
   const [userDetails, setUserDetails] = useState({});
+  const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState("cart");
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ title: "", message: "" });
   const [selectedCartItems, setSelectedCartItems] = useState([]);
+  const [reload, setReload] = useState(false);
 
   const closeModal = () => {
     setShowModal(false);
@@ -42,25 +44,50 @@ export default function UserDashboard(props) {
   }, []);
 
   useEffect(() => {
+    (async function getUserDet() {
+      await getAllOrders();
+    })();
+  }, []);
+
+  useEffect(() => {
     (async function getAllCartItems() {
       await getCartItems();
     })();
   }, []);
 
+  const getAllOrders = async () => {
+    try {
+      const response = await axios.get(apiUrl + "orders/", {
+        headers: {
+          Authorization: "Bearer " + userToken,
+        },
+      });
+      console.log(
+        response.data.data.orders,
+        "the orderssssssssssssssssssssssssssss"
+      );
+      setOrders(response.data.data.orders);
+    } catch (err) {
+      console.log(err);
+      handleShowModal("Error", "Failed to load Resource");
+    }
+  };
 
   const validateAllItemsAreSameCurrency = (items) => {
     if (items.length <= 1) {
       return true;
     }
-    console.log(items, "the codes bro")
+    console.log(items, "the codes bro");
     const checkCurrency = items[0].currencyCode;
     let dissimilarCurrencyCode = items.filter((item) => {
       return item.currencyCode != checkCurrency;
-    })
+    });
     if (dissimilarCurrencyCode.length > 0) {
-      return false
-    } else { return true }
-  }
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const getItemsToOrder = (selectedOnly) => {
     let itemsInfo = [];
@@ -90,7 +117,6 @@ export default function UserDashboard(props) {
         return cartItems.map((item) => {
           console.log(item);
           console.log(item.itemQuantity);
-          // productId: props.item.productId, quantity: props.item.itemQuantity, itemId: props.item._id
           return {
             cartId: item._id,
             productId: item.productId,
@@ -111,7 +137,7 @@ export default function UserDashboard(props) {
       );
       return;
     }
-    let itemsToValidate = selected ? selectedCartItems : cartItems
+    let itemsToValidate = selected ? selectedCartItems : cartItems;
     if (!validateAllItemsAreSameCurrency(itemsToValidate)) {
       handleShowModal(
         "Cannot Proceed",
@@ -166,7 +192,6 @@ export default function UserDashboard(props) {
       setCartItems(response.data.data.items);
     } catch (err) {
       console.log(err);
-      //open modal here
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -212,7 +237,7 @@ export default function UserDashboard(props) {
       console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
-  }
+  };
 
   return (
     <div className="max-w-full w-full my-2 px-8">
@@ -325,31 +350,38 @@ export default function UserDashboard(props) {
                   </div>
                 </div>
               ) : (
-                  <div>
-                    <h3 className="text-2xl font-nunito font-bold">
-                      Your Orders:
+                <div>
+                  <h3 className="text-2xl font-nunito font-bold">
+                    Your Orders:
                   </h3>
-                    <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                      <p>Image</p>
-                      <p>Product Name</p>
-                      <p>Price</p>
-                      <p>Delivery fee</p>
-                    </div>
-                    <div
-                      style={{ height: "400px" }}
-                      className="w-full py-4 px-4 overflow-x-auto"
-                    >
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                      <Transaction />
-                    </div>
+                  <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                    <p>Image</p>
+                    <p>Product Name</p>
+                    <p>Currency</p>
+                    <p>Total Price</p>
+                    <p>Quantity</p>
+                    <p>Delivery Fee</p>
                   </div>
-                )}
+                  <div
+                    style={{ height: "400px" }}
+                    className="w-full py-4 px-4 overflow-x-auto"
+                  >
+                    {orders.map((order) => {
+                      return (
+                        <Transaction
+                          key={order._id}
+                          cut={order.totalDeliveryPricePaid}
+                          price={order.totalProductPricePaid}
+                          name={order.productName}
+                          imageLink={order.productImageLink}
+                          currency={order.currencyCode}
+                          quantity={order.quantity}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

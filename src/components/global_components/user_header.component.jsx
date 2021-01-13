@@ -6,10 +6,12 @@ export default function UserHeader(props) {
   // console.log(props.riders);
   const [state, dispatch] = useContext(UserContext);
   const [selectedRider, setSelectedRider] = useState();
+  const username = state.username == null ? "Guest" : state.username;
+
   return (
     <>
       <h3 className="font-nunito text-4xl font-bold py-1">
-        Hello{" " + state.username},
+        Hello{" " + username},
       </h3>
       <div className="flex flex-row  items-center">
         {props.userType === "merchant" && (

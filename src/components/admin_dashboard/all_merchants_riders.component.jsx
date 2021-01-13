@@ -20,7 +20,12 @@ export default function MerchantRiderList(props) {
                 className="flex flex-row justify-around items-center p-1 border-1 border-yellow-500 my-2 rounded-2xl"
               >
                 <p className="font-nunito font-bold">{user.username}</p>
-                <p className="py-1 ml-3  font-bold font-nunito bg-green-600 shadow-lg cursor-pointer text-yellow-50 px-4 rounded-2xl text-sm">
+                <p
+                  onClick={() => {
+                    // props.delete(user._id, user.accountType);
+                  }}
+                  className="py-1 ml-3  font-bold font-nunito bg-green-600 shadow-lg cursor-pointer text-yellow-50 px-4 rounded-2xl text-sm"
+                >
                   view
                 </p>
                 <p
