@@ -3,7 +3,6 @@ import React from "react";
 export default function MerchantList(props) {
   let merchants = props.merchants;
 
-  console.log(props.merchants, "all merchants");
   return (
     <div className="rounded-2xl border-yellow-500 border-2 py-4 px-4 w-full">
       <p className="text-3xl font-nunito font-bold">{"Your Merchants"}</p>

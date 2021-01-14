@@ -10,6 +10,7 @@ import axios from "axios";
 import { apiUrl } from "../../configParams";
 import Modal from "../global_components/modal.component";
 import PayFee from "../global_components/pay_fee.component";
+import empty from '../../assets/images/empty.jpg';
 
 export default function MerchantDashboard(props) {
   const history = useHistory();
@@ -65,11 +66,8 @@ export default function MerchantDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.user.active, "user details");
       setUserDetails(response.data.data.user);
     } catch (err) {
-      console.log(err);
-      //open modal here
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -81,11 +79,8 @@ export default function MerchantDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data);
       setAllRiders(response.data.data.riders);
     } catch (err) {
-      console.log(err);
-      //open modal here
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -100,11 +95,8 @@ export default function MerchantDashboard(props) {
           },
         }
       );
-      console.log(response.data.data);
       setRider(response.data.data.dispatchers[0]);
     } catch (err) {
-      console.log(err);
-      //open modal here
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -116,10 +108,8 @@ export default function MerchantDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data);
       setProducts(response.data.data.products);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -137,13 +127,11 @@ export default function MerchantDashboard(props) {
           dispatcherId: productId,
         },
       });
-      console.log(response.data.data);
       if (response.data.status === "success") {
         await getAllProducts();
         handleShowModal("Success", "Deleted Successfully");
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -161,16 +149,13 @@ export default function MerchantDashboard(props) {
           dispatcherId: dispatcherId,
         },
       });
-      console.log(response.data.data);
       if (response.data.status === "success") {
         await getMerchantRider();
-        console.log(response.data);
         handleShowModal("Success", "Added Successfully");
       } else {
         handleShowModal("Failed", response.data.data.message);
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -181,13 +166,8 @@ export default function MerchantDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(
-        response.data.data.orders,
-        "the orderssssssssssssssssssssssssssss"
-      );
       setOrders(response.data.data.orders);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -252,17 +232,17 @@ export default function MerchantDashboard(props) {
                         </h2>
                       </div>
                     ) : (
-                      products.map((product) => {
-                        return (
-                          <MerchantEditProduct
-                            key={product.name}
-                            product={product}
-                            deleteProduct={deleteProduct}
-                            merchantId={merchantId}
-                          />
-                        );
-                      })
-                    )}
+                        products.map((product) => {
+                          return (
+                            <MerchantEditProduct
+                              key={product.name}
+                              product={product}
+                              deleteProduct={deleteProduct}
+                              merchantId={merchantId}
+                            />
+                          );
+                        })
+                      )}
                   </div>
                 </div>
                 <br />
@@ -270,29 +250,49 @@ export default function MerchantDashboard(props) {
                   <h3 className="text-2xl font-nunito font-bold">
                     Your Orders
                   </h3>
-                  <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                    <p>Image</p>
-                    <p>Product Name</p>
-                    <p>Currency</p>
-                    <p>Total Paid</p>
-                    <p>Quantity</p>
-                    <p>Revenue</p>
-                  </div>
-                  <div className="w-full h-80 py-4 px-4 overflow-x-auto">
-                    {orders.map((order) => {
-                      return (
-                        <Transaction
-                          key={order._id}
-                          cut={order.merchantCut}
-                          price={order.totalProductPricePaid}
-                          name={order.productName}
-                          imageLink={order.productImageLink}
-                          currency={order.currencyCode}
-                          quantity={order.quantity}
-                        />
-                      );
-                    })}
-                  </div>
+                  {orders.length <= 0 && (
+                    <>
+                      <>
+                        <div className="flex flex-row items-center justify-center">
+                          <img
+                            src={empty}
+                            alt="404"
+                            className="w-productDetail"
+                          />
+                        </div>
+                        <h3 className="font-nunito font-bold text-xl pt-3 text-center">
+                          No Items In Cart
+                      </h3>
+                      </>
+                    </>
+                  )}
+                  {orders.length > 0 && (
+                    <>
+                      <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                        <p>Image</p>
+                        <p>Product Name</p>
+                        <p>Currency</p>
+                        <p>Total Paid</p>
+                        <p>Quantity</p>
+                        <p>Revenue</p>
+                      </div>
+                      <div className="w-full h-80 py-4 px-4 overflow-x-auto">
+                        {orders.map((order) => {
+                          return (
+                            <Transaction
+                              key={order._id}
+                              cut={order.merchantCut}
+                              price={order.totalProductPricePaid}
+                              name={order.productName}
+                              imageLink={order.productImageLink}
+                              currency={order.currencyCode}
+                              quantity={order.quantity}
+                            />
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

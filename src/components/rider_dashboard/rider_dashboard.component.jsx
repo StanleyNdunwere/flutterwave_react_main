@@ -10,6 +10,8 @@ import Modal from "../global_components/modal.component";
 import { apiUrl } from "../../configParams";
 import UserContext from "../../context/user.context";
 import axios from "axios";
+import empty from '../../assets/images/empty.jpg'
+
 
 export default function RiderDashboard(props) {
   const history = useHistory();
@@ -57,10 +59,8 @@ export default function RiderDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.user);
       setUserDetails(response.data.data.user);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -75,11 +75,8 @@ export default function RiderDashboard(props) {
           },
         }
       );
-      console.log(response.data.data, "this is the response");
       setMerchants(response.data.data.merchants);
     } catch (err) {
-      console.log(err);
-      //open modal here
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -91,13 +88,8 @@ export default function RiderDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(
-        response.data.data.orders,
-        "the orderssssssssssssssssssssssssssss"
-      );
       setOrders(response.data.data.orders);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -140,32 +132,50 @@ export default function RiderDashboard(props) {
                 <h3 className="text-2xl font-nunito font-bold">
                   Your Deliveries:
                 </h3>
-                <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                  <p>Image</p>
-                  <p>Product Name</p>
-                  <p>Currency</p>
-                  <p>Price</p>
-                  <p>Quantity</p>
-                  <p>Revenue</p>
-                </div>
-                <div
-                  style={{ height: "400px" }}
-                  className="w-full py-4 px-4 overflow-x-auto"
-                >
-                  {orders.map((order) => {
-                    return (
-                      <Transaction
-                        key={order._id}
-                        cut={order.dispatchCut}
-                        price={order.totalProductPricePaid}
-                        name={order.productName}
-                        imageLink={order.productImageLink}
-                        currency={order.currencyCode}
-                        quantity={order.quantity}
+                {orders.length <= 0 && (
+                  <>
+                    <div className="flex flex-row items-center justify-center">
+                      <img
+                        src={empty}
+                        alt="404"
+                        className="w-productDetail"
                       />
-                    );
-                  })}
-                </div>
+                    </div>
+                    <h3 className="font-nunito font-bold text-xl pt-3 text-center">
+                      No Deliveries Yet
+                   </h3>
+                  </>
+                )}
+                {orders.length > 0 && (
+                  <>
+                    <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                      <p>Image</p>
+                      <p>Product Name</p>
+                      <p>Currency</p>
+                      <p>Price</p>
+                      <p>Quantity</p>
+                      <p>Revenue</p>
+                    </div>
+                    <div
+                      style={{ height: "400px" }}
+                      className="w-full py-4 px-4 overflow-x-auto"
+                    >
+                      {orders.map((order) => {
+                        return (
+                          <Transaction
+                            key={order._id}
+                            cut={order.dispatchCut}
+                            price={order.totalProductPricePaid}
+                            name={order.productName}
+                            imageLink={order.productImageLink}
+                            currency={order.currencyCode}
+                            quantity={order.quantity}
+                          />
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -51,7 +51,6 @@ export default function LoginComponent(props) {
         history.replace(`/${link}`);
       }
     } catch (err) {
-      console.log(err);
       // return null;
     }
   };

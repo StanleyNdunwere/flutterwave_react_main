@@ -52,11 +52,9 @@ export default function ProductEditCreate(props) {
           message: response.data.message,
         });
       } else {
-        console.log(response.data);
         history.goBack();
       }
     } catch (err) {
-      console.log(err);
       return null;
     }
   };
@@ -201,7 +199,6 @@ export default function ProductEditCreate(props) {
                       fontSize={"1.2rem"}
                       text="Save Changes"
                       execFunc={() => {
-                        console.log(productInfo);
                         createNewProduct();
                       }}
                     />

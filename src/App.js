@@ -26,7 +26,6 @@ function App(props) {
   };
   const [initState, setInitState] = useState(initialState);
 
-  console.log(initState);
   const saveToLocalStorage = (payload) => {
     window.localStorage.setItem("token", payload.data.token);
     window.localStorage.setItem("username", payload.data.username);
@@ -45,7 +44,6 @@ function App(props) {
     switch (action.type) {
       case "LOGIN":
         saveToLocalStorage(action.payload);
-        console.log(action.payload)
         return {
           ...state,
           token: action.payload.data.token,
@@ -69,7 +67,6 @@ function App(props) {
     }
   }
   const [state, dispatch] = useReducer(reducer, initState)
-  console.log(state, "new state appjs login");
 
   return (
     <UserProvider value={[state, dispatch]} >

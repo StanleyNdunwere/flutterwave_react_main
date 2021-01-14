@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 export default function CartItem(props) {
-  // console.log(props.delete);
 
   const [selected, setSelected] = useState(false);
   return (
@@ -24,7 +23,6 @@ export default function CartItem(props) {
       <div className="flex flex-row items-center">
         <p
           onClick={() => {
-            console.log(props.item._id, "id cart item");
             props.delete(props.item._id);
           }}
           className="font-nunito font-extrabold mr-2 text-sm px-2 py-2 bg-red-500 cursor-pointer rounded-xl shadow-around text-green-50 hover:bg-green-600"
@@ -36,7 +34,6 @@ export default function CartItem(props) {
             if (selected === false) {
               setSelected(true);
               let purchaseInfo = { ...props.item };
-              console.log(purchaseInfo, "vakess retrieved");
               props.setSelectedCartItems([
                 ...props.selectedCartItems,
                 purchaseInfo,

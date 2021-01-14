@@ -21,7 +21,6 @@ export default function ProductCard(props) {
               <CustomButton text={"Buy Now"}
                 fontSize={"1rem"}
                 execFunc={() => {
-                  console.log(history.location.pathname)
                   history.push("/product/" + props.id)
                 }} />
             </div>

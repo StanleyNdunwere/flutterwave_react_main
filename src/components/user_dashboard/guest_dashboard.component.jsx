@@ -71,7 +71,6 @@ export default function GuestDashboard(props) {
           ? window.localStorage.getItem("guestEmail")
           : "N/A";
     });
-    console.log(items, "thie eitems");
     setCartItems([...items]);
   };
 
@@ -93,13 +92,10 @@ export default function GuestDashboard(props) {
       ? window.localStorage.getItem("guestEmail")
       : "N/A";
     if (selectedOnly) {
-      console.log(selectedCartItems.length, "length cart items chosen");
       if (selectedCartItems.length === 0) {
         return [];
       } else {
         let selectedItems = selectedCartItems.map((item) => {
-          console.log(item, "the items");
-          console.log(item.username);
           return {
             cartId: item._id,
             productId: item.productId,
@@ -117,8 +113,6 @@ export default function GuestDashboard(props) {
         return [];
       } else {
         let cartItemsToOrder = cartItems.map((item) => {
-          console.log(item);
-          console.log(item.itemQuantity);
           return {
             cartId: item._id,
             productId: item.productId,
@@ -137,7 +131,6 @@ export default function GuestDashboard(props) {
   const processMultiplePayments = async (selected) => {
     const connectUrl = apiUrl + "orders/guest/multiple";
     const itemsToOrder = getItemsToOrder(selected);
-    console.log(itemsToOrder, "order items");
     if (itemsToOrder.length === 0) {
       handleShowModal(
         "Cannot Proceed",
@@ -165,14 +158,12 @@ export default function GuestDashboard(props) {
       if (response.data.status === "Failed") {
         handleShowModal("Failed", response.data.message);
       } else {
-        console.log(response.data);
         itemsToOrder.items.forEach((item) => {
           deleteCartItem(item.cartId);
         });
         window.location.assign(response.data.link);
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
   };
@@ -191,12 +182,10 @@ export default function GuestDashboard(props) {
       if (response.data.status === "Failed") {
         handleShowModal("Failed", "Unable to place your order");
       } else {
-        console.log(response.data);
         deleteCartItem(cartId);
         window.location.assign(response.data.link);
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
   };

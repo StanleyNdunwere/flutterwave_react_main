@@ -63,13 +63,8 @@ export default function UserDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(
-        response.data.data.orders,
-        "the orderssssssssssssssssssssssssssss"
-      );
       setOrders(response.data.data.orders);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -78,7 +73,6 @@ export default function UserDashboard(props) {
     if (items.length <= 1) {
       return true;
     }
-    console.log(items, "the codes bro");
     const checkCurrency = items[0].currencyCode;
     let dissimilarCurrencyCode = items.filter((item) => {
       return item.currencyCode != checkCurrency;
@@ -101,8 +95,6 @@ export default function UserDashboard(props) {
         return [];
       } else {
         return selectedCartItems.map((item) => {
-          console.log(item, "the items");
-          console.log(item.quantity);
           return {
             cartId: item.itemId,
             productId: item.productId,
@@ -116,8 +108,6 @@ export default function UserDashboard(props) {
         return [];
       } else {
         return cartItems.map((item) => {
-          console.log(item);
-          console.log(item.itemQuantity);
           return {
             cartId: item._id,
             productId: item.productId,
@@ -158,11 +148,9 @@ export default function UserDashboard(props) {
       if (response.data.status === "Failed") {
         handleShowModal("Failed", response.data.message);
       } else {
-        console.log(response.data);
         window.location.assign(response.data.link);
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
   };
@@ -174,10 +162,8 @@ export default function UserDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.user);
       setUserDetails(response.data.data.user);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -189,10 +175,8 @@ export default function UserDashboard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data, "this is the response");
       setCartItems(response.data.data.items);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -206,13 +190,11 @@ export default function UserDashboard(props) {
         },
         url: apiUrl + "cart/" + itemId,
       });
-      console.log(response.data);
       if (response.data.status === "success") {
         getCartItems();
         handleShowModal("Success", "Cart Item deleted Successfully");
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -231,11 +213,9 @@ export default function UserDashboard(props) {
       if (response.data.status === "Failed") {
         handleShowModal("Failed", "Unable to place your order");
       } else {
-        console.log(response.data);
         window.location.assign(response.data.link);
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "We are having trouble placing your order");
     }
   };
@@ -369,47 +349,47 @@ export default function UserDashboard(props) {
                   )}
                 </div>
               ) : (
-                <div>
-                  <h3 className="text-2xl font-nunito font-bold">
-                    Your Orders:
+                  <div>
+                    <h3 className="text-2xl font-nunito font-bold">
+                      Your Orders:
                   </h3>
-                  {orders.length <= 0 && (
-                    <div className="flex flex-row items-center justify-center">
-                      <img src={empty} alt="404" className="w-productDetail" />
-                    </div>
-                  )}
-                  {orders.length > 0 && (
-                    <>
-                      <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                        <p>Image</p>
-                        <p>Product Name</p>
-                        <p>Currency</p>
-                        <p>Total Price</p>
-                        <p>Quantity</p>
-                        <p>Delivery Fee</p>
+                    {orders.length <= 0 && (
+                      <div className="flex flex-row items-center justify-center">
+                        <img src={empty} alt="404" className="w-productDetail" />
                       </div>
-                      <div
-                        style={{ height: "400px" }}
-                        className="w-full py-4 px-4 overflow-x-auto"
-                      >
-                        {orders.map((order) => {
-                          return (
-                            <Transaction
-                              key={order._id}
-                              cut={order.totalDeliveryPricePaid}
-                              price={order.totalProductPricePaid}
-                              name={order.productName}
-                              imageLink={order.productImageLink}
-                              currency={order.currencyCode}
-                              quantity={order.quantity}
-                            />
-                          );
-                        })}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+                    )}
+                    {orders.length > 0 && (
+                      <>
+                        <div className="h-10 py-1 px-6 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                          <p>Image</p>
+                          <p>Product Name</p>
+                          <p>Currency</p>
+                          <p>Total Price</p>
+                          <p>Quantity</p>
+                          <p>Delivery Fee</p>
+                        </div>
+                        <div
+                          style={{ height: "400px" }}
+                          className="w-full py-4 px-4 overflow-x-auto"
+                        >
+                          {orders.map((order) => {
+                            return (
+                              <Transaction
+                                key={order._id}
+                                cut={order.totalDeliveryPricePaid}
+                                price={order.totalProductPricePaid}
+                                name={order.productName}
+                                imageLink={order.productImageLink}
+                                currency={order.currencyCode}
+                                quantity={order.quantity}
+                              />
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
             </div>
           </div>
         </div>

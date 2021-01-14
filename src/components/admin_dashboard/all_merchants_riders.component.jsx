@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function MerchantRiderList(props) {
-  console.log(props.users.length, "users length");
   return (
     <>
       <h2 className="text-3xl font-nunito font-bold px-3">{props.title}</h2>

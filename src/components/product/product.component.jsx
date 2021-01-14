@@ -89,12 +89,10 @@ export default function Product(props) {
         if (response.data.status === "Failed") {
           handleShowModal("Failed", "Unable to place your order");
         } else {
-          console.log(response.data);
           setStayOnPage(false);
           window.location.assign(response.data.link);
         }
       } catch (err) {
-        console.log(err);
         handleShowModal("Failed", "We are having trouble placing your order");
       }
     }
@@ -103,7 +101,6 @@ export default function Product(props) {
   const getSingleProductWithId = async () => {
     try {
       const response = await axios.get(apiUrl + "products/all/" + id, {});
-      console.log(response.data.data.product);
       setProductInfo(response.data.data.product);
       const loadedProductInfo = response.data.data.product;
       setCartItem({
@@ -117,7 +114,6 @@ export default function Product(props) {
         productImageLink: loadedProductInfo.productImageLink,
       });
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "Couldn't load resource");
     }
   };
@@ -149,11 +145,8 @@ export default function Product(props) {
       if (response.data.status === "Failed") {
         handleShowModal("Failed", "Unable to save your cart Item");
       }
-      console.log(response.data);
       handleShowModal("Success", "Saved to cart successfully");
-      // history.push("/")
     } catch (err) {
-      console.log(err);
       handleShowModal("Failed", "We are having trouble saving your cart Item");
     }
   };
@@ -257,7 +250,6 @@ export default function Product(props) {
                   fontSize={"1.2rem"}
                   text="Add To Cart"
                   execFunc={() => {
-                    console.log(cartItem);
                     if (isLoggedIn) {
                       createNewCartItemLoggedIn();
                     } else {

@@ -3,7 +3,6 @@ import UserContext from "../../context/user.context";
 import CustomButton from "./button.component";
 
 export default function UserHeader(props) {
-  // console.log(props.riders);
   const [state, dispatch] = useContext(UserContext);
   const [selectedRider, setSelectedRider] = useState();
   const username = state.username == null ? "Guest" : state.username;
@@ -29,7 +28,6 @@ export default function UserHeader(props) {
             >
               <option value=""></option>
               {props.riders.map((rider) => {
-                // console.log(rider);
                 return (
                   <option key={rider._id} value={rider._id}>
                     {rider.username}

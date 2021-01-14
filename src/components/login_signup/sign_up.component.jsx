@@ -21,7 +21,6 @@ export default function SignUpComponent(props) {
 
   const formIsFilled = () => {
     const values = Object.keys(signUpDetails);
-    console.log(values);
     return !(values.length < 8);
   };
 
@@ -38,7 +37,7 @@ export default function SignUpComponent(props) {
         message: response.data.message,
       });
     } catch (err) {
-      console.log(err);
+      //handle error
     }
   };
 

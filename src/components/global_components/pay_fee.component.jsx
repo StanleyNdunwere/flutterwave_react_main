@@ -35,10 +35,8 @@ export default function PayFee(props) {
       } else {
         let link = response.data.link;
         window.location.assign(link)
-        console.log(link)
       }
     } catch (err) {
-      console.log(err)
       handleShowModal("Failed", "Couldn't complete fee payment for some reason, contact administrator")
 
     }

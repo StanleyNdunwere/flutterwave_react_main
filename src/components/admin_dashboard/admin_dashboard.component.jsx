@@ -12,6 +12,7 @@ import AdminTransaction from "./admin_transactions.component";
 import MerchantRiderList from "./all_merchants_riders.component";
 import MerchantList from "./all_merchants_riders.component";
 import MerchantRiderDetail from "./merchant_rider_detail.component";
+import empty from '../../assets/images/empty.jpg'
 
 export default function AdminDashBoard(props) {
   const history = useHistory();
@@ -73,10 +74,8 @@ export default function AdminDashBoard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data);
       setTotalCommissions(response.data.data.totalCommissionsEarned);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -88,10 +87,8 @@ export default function AdminDashBoard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.user);
       setUserDetails(response.data.data.user);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -105,14 +102,12 @@ export default function AdminDashBoard(props) {
         },
         url: apiUrl + "users/" + userId,
       });
-      console.log(response.data.data);
       if (response.data.status === "success") {
         if (userType === "merchant") getAllMerchants();
         else getAllRiders();
         handleShowModal("Success", "Deleted Successfully");
       }
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -124,10 +119,8 @@ export default function AdminDashBoard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.merchants, "the mrecants");
       setMerchants(response.data.data.merchants);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -139,10 +132,8 @@ export default function AdminDashBoard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(response.data.data.riders, "the riders");
       setRiders(response.data.data.riders);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -154,13 +145,8 @@ export default function AdminDashBoard(props) {
           Authorization: "Bearer " + userToken,
         },
       });
-      console.log(
-        response.data.data.orders,
-        "the orderssssssssssssssssssssssssssss"
-      );
       setOrders(response.data.data.orders);
     } catch (err) {
-      console.log(err);
       handleShowModal("Error", "Failed to load Resource");
     }
   };
@@ -183,21 +169,41 @@ export default function AdminDashBoard(props) {
         <div className="w-full grid grid-flow-row gap-5 grid-cols-body">
           <div className="">
             <div className="w-full rounded-3xl bg-yellow-100 shadow-around px-6 py-6">
-              <MerchantRiderList
-                title={"All Merchants"}
-                userType="Merchant"
-                users={merchants}
-                delete={deleteUser}
-                view={null}
-              />
+              {merchants.length > 0 &&
+                <MerchantRiderList
+                  title={"All Merchants"}
+                  userType="Merchant"
+                  users={merchants}
+                  delete={deleteUser}
+                  view={null}
+                />}
+              {merchants.length <= 0 &&
+                (
+                  <>
+                    <div>
+                      <h2 className="font-nunito font-bold text-xl text-center">No Merchants signed up yet</h2>
+                    </div>
+                  </>
+                )
+              }
               <br></br>
-              <MerchantRiderList
-                title={"All Riders"}
-                userType="Rider"
-                users={riders}
-                delete={deleteUser}
-                view={null}
-              />
+              {riders.length > 0 &&
+                <MerchantRiderList
+                  title={"All Riders"}
+                  userType="Rider"
+                  users={riders}
+                  delete={deleteUser}
+                  view={null}
+                />}
+              {riders.length <= 0 &&
+                (
+                  <>
+                    <div>
+                      <h2 className="font-nunito font-bold text-xl text-center">No Riders signed up yet</h2>
+                    </div>
+                  </>
+                )
+              }
             </div>
           </div>
           <div className="max-w-full min-w-0">
@@ -207,34 +213,52 @@ export default function AdminDashBoard(props) {
                 <h3 className="text-2xl font-nunito font-bold">
                   All transactions:
                 </h3>
-                <div className="h-10 py-1 px-5 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
-                  <p>Image</p>
-                  <p>Product Name</p>
-                  <p>Merchant</p>
-                  <p>Rider</p>
-                  <p>Currency</p>
-                  <p>Merchant fee</p>
-                  <p>Rider fee</p>
-                  <p>Jumga</p>
-                </div>
-                <div className="w-full h-96 py-4 px-4 overflow-x-auto">
-                  {orders.map((order) => {
-                    return (
-                      <AdminTransaction
-                        key={order._id}
-                        imageLink={order.productImageLink}
-                        name={order.productName}
-                        merchantName={order.merchantName}
-                        dispatchName={order.dispatchName}
-                        currency={order.currencyCode}
-                        merchantCut={order.merchantCut}
-                        dispatchCut={order.dispatchCut}
-                        jumgaProductCut={order.jumgaProductCut}
-                        jumgaDeliveryCut={order.jumgaDeliveryCut}
+                {orders.length <= 0 && (
+                  <>
+                    <div className="flex flex-row items-center justify-center">
+                      <img
+                        src={empty}
+                        alt="404"
+                        className="w-productDetail"
                       />
-                    );
-                  })}
-                </div>
+                    </div>
+                    <h3 className="font-nunito font-bold text-xl pt-3 text-center">
+                      No Orders Yet
+                   </h3>
+                  </>
+                )}
+                {orders.length > 0 && (
+                  <>
+                    <div className="h-10 py-1 px-5 my-1 rounded-2xl overflow-none w-full flex flex-row justify-between items-center font-nunito font-bold font-lg">
+                      <p>Image</p>
+                      <p>Product Name</p>
+                      <p>Merchant</p>
+                      <p>Rider</p>
+                      <p>Currency</p>
+                      <p>Merchant fee</p>
+                      <p>Rider fee</p>
+                      <p>Jumga</p>
+                    </div>
+                    <div className="w-full h-96 py-4 px-4 overflow-x-auto">
+                      {orders.map((order) => {
+                        return (
+                          <AdminTransaction
+                            key={order._id}
+                            imageLink={order.productImageLink}
+                            name={order.productName}
+                            merchantName={order.merchantName}
+                            dispatchName={order.dispatchName}
+                            currency={order.currencyCode}
+                            merchantCut={order.merchantCut}
+                            dispatchCut={order.dispatchCut}
+                            jumgaProductCut={order.jumgaProductCut}
+                            jumgaDeliveryCut={order.jumgaDeliveryCut}
+                          />
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
